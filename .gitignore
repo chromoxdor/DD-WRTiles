@@ -1,0 +1,11 @@
+## OS Specific Hidden Files ####
+
+# MacOSX Finder *****
+.DS_Store
+
+test_to-json.js
+/gifs
+test/test_bkup.css
+test/test.min.css
+test/test.min.js
+.vscode

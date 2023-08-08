@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset='utf-8' />
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg id='Ebene_1' data-name='Ebene 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 39.16 39.16'%3E%3Cdefs%3E%3Cstyle%3E .cls-1 %7B fill: %23009fe3; %7D .cls-2 %7B fill: %2329235c; %7D .cls-3 %7B fill: %23575756; %7D %3C/style%3E%3C/defs%3E%3Crect class='cls-1' y='0' width='18.72' height='18.72' rx='5.23' ry='5.23'/%3E%3Crect class='cls-3' x='20.43' y='0' width='18.72' height='18.72' rx='5.23' ry='5.23'/%3E%3Crect class='cls-3' y='20.43' width='18.72' height='18.72' rx='5.23' ry='5.23'/%3E%3Crect class='cls-2' x='20.43' y='20.43' width='18.72' height='18.72' rx='5.23' ry='5.23'/%3E%3C/svg%3E"
+        type="image/svg+xml">
+    <link rel="stylesheet" href="http://xxx:8080/test.css">
+    <script src="http://xxx:8080/test.js"></script>
+    <title id="unitT"></title>
+</head>
+
+<body>
+    <div id="container">
+        <div id="framie"></div>
+        <div id="mySidenav" class="sidenav">
+            <div id="sysInfo">no info found...</div>
+            <div class="menueWrap" id="menueWrap1"></div>
+            <div id="menueList"></div>
+            <div class="menueWrap" id="menueWrap2"></div>
+            <div class="sideNbtn" id="openSys" onclick="openSys()">
+                <div id="dateV">20230808/1</div>&#8505;&#xFE0E;
+            </div>
+            <div class="sideNbtn" id="closeBtn" onclick="closeNav()">&times;&#xFE0E;</div>
+        </div>
+        <div id="unitId" style="cursor: pointer;" onclick="launchFs(document.documentElement)">&nbsp;</div>
+        <div id="allList">
+            <div id="sensorList"></div>
+        </div>
+        <div id="opener">
+            <div class="open">
+                <span id="nOpen" style="font-size:30px;cursor:pointer;background:none;"
+                    onclick="openNav(event)">&#9776;&#xFE0E;</span>
+                <span id="mOpen" style="font-size:30px;cursor:pointer;background:none;"
+                    onclick="splitOn('home'); topF()">&#8962;&#xFE0E;</span>
+            </div>
+        </div>
+    </div>
+    <script>
+        fetchDD();
+    </script>
+</body>
+
+</html>
