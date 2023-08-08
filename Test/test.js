@@ -128,13 +128,13 @@ async function fetchDD(event) {
 
     let WiFiJSON = DDTextToJSON(WiFiArray);
 
-    //----combine LanArray & WiFiArray--------------------------------------------------------------
+    //----combine LanArray & ARPArray--------------------------------------------------------------
     result = LanJSON.map(item => ({
         ...arpJSON.find(({ MAC }) => item.MAC == MAC),
         ...item,
     }));
 
-    //----combine result & arpArray--------------------------------------------------------------
+    //----combine result & WiFiArray--------------------------------------------------------------
     result = result.map(item => ({
         ...WiFiJSON.find(({ MAC }) => item.MAC == MAC),
         ...item,
@@ -151,22 +151,6 @@ async function fetchDD(event) {
     });
 
     //----sort Array----------------------------------------------------------------------
-    if (sortMode.includes("Signal")) {
-        if (sortMode == "SignalUP") {
-            result = [
-                ...result.filter(x => x.Signal),
-                ...result.filter(x => !x.Signal)
-            ];
-        }
-
-        else {
-            result = [
-                ...result.filter(x => !x.Signal),
-                ...result.filter(x => x.Signal)
-            ];
-        }
-    }
-
     result.sort((a, b) => {
         if (sortMode.includes("Name")) {
             return a.Name.toLowerCase() === b.Name.toLowerCase() ? 0 : a.Name.toLowerCase() > b.Name.toLowerCase() ? 1 : -1;
@@ -184,6 +168,16 @@ async function fetchDD(event) {
 
     if (sortMode.includes("DN")) {
         result.reverse()
+    }
+    if (sortMode.includes("Signal")) {
+        result1 = [
+            ...result.filter(x => x.Signal)];
+        result2 = [
+            ...result.filter(x => !x.Signal)];
+        result2.sort((a, b) => {
+            return a.Name.toLowerCase() === b.Name.toLowerCase() ? 0 : a.Name.toLowerCase() > b.Name.toLowerCase() ? 1 : -1;
+        });
+        result = result1.concat(result2);
     }
 
     //----Make Tiles--------------------------------------------------------------
