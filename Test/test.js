@@ -62,7 +62,7 @@ async function fetchDD(event) {
 
     //------LanArray----------------------------------------------------------------
     if (nTH == 0) {
-        let response = await fetch('http://192.168.1.1/Status_Lan.live.asp', {
+        let response = await fetch('/Status_Lan.live.asp', {
             method: 'GET', credentials: 'include'
         });
         LanText = await response.text();
@@ -105,7 +105,7 @@ async function fetchDD(event) {
     let arpJSON = DDTextToJSON(arpArray);
 
     //--------WiFiArray--------------------------------------------------------------
-    let response2 = await fetch('http://192.168.1.1/Status_Wireless.live.asp', {
+    let response2 = await fetch('/Status_Wireless.live.asp', {
         method: 'GET', credentials: 'include'
     });
     WiFiText = await response2.text();
