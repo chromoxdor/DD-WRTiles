@@ -107,7 +107,6 @@ iframe {
 }
 
 .slider::-webkit-meter-optimum-value {
-    border-radius: 5px;
     box-shadow: 0 5px 5px -5px #333 inset;
     background: #11962e;
 }
