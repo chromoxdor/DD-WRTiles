@@ -7,8 +7,7 @@
 }
 
 body {
-    user-select: none;
-    -webkit-user-select: none;
+   
     margin: 0;
     background: #e8e8e8;
     color: #4e4a4a;
@@ -66,6 +65,8 @@ iframe {
 }
 
 #sensorList {
+    -webkit-user-select: none;
+    user-select: none;
     display: grid;
     gap: 1vh;
     justify-content: center;
@@ -134,16 +135,16 @@ iframe {
     overflow: hidden;
     position: relative;
     align-items: stretch;
-    cursor: pointer;
+    cursor: default;
 }
 
 .response {
     background: #3e88cb !important;
-
+    cursor: pointer;
 }
 
 .online {
-    background: #2B708E !important
+    background: #2B708E !important;
 }
 
 .btnTile {
@@ -202,6 +203,8 @@ iframe {
 }
 
 .sidenav {
+    -webkit-user-select: none;
+    user-select: none;
     height: 100%;
     width: 280px;
     position: fixed;
@@ -315,6 +318,11 @@ iframe {
     transition: .5s;
     height: 185px;
     flex-shrink: 999;
+}
+
+.select{
+    -webkit-user-select: all;
+    user-select: all;
 }
 
 @media screen and (max-height: 450px) {

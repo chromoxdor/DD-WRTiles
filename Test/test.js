@@ -209,7 +209,7 @@ async function fetchDD(event) {
         html += '<div  class="sensors" id="' + item.IP + '" style="font-weight:bold;">' + item.Name + '</div>';
 
         if (document.cookie.includes("IP=1")) {
-            html += '<div class=row><div class=odd>IP:</div><div class=even>' + item.IP + '</div></div>';
+            html += '<div class=row><div class=odd>IP:</div><div class="even select" id="IP">' + item.IP + '</div></div>';
         }
 
         if (document.cookie.includes("Adapter=1")) {
@@ -231,7 +231,7 @@ async function fetchDD(event) {
 
         if (document.cookie.includes("MAC=1")) {
             //html += '<div class=row style="align-self:center"><div class=even>' + item.MAC + '</div></div>';
-            html += '<div class=row style="align-self:center"><div class=even>XX:DD:0W:RT:XX:XX</div></div>';
+            html += '<div class=row style="align-self:center"><div class="even select" id="MAC">' + item.MAC + '</div></div>';
         }
 
         if (item.Signal) {
@@ -262,11 +262,13 @@ async function fetchDD(event) {
         }
         //document.getElementById('unitId').innerHTML = routerIP;
         document.getElementById('unitT').innerHTML = routerIP;
+
         makeMenu();
         changeCss();
         longPressB();
     }
 }
+
 
 function changeCss() {
     x = "auto ";
@@ -331,7 +333,7 @@ function addEonce() {
             //if (e.clientX >280 && document.getElementById('sysInfo').offsetHeight === 0) closeNav()
         }
     })
-    document.getElementById('mySidenav').addEventListener('mouseleave', e => {
+    document.getElementById('mySidenav').addEventListener('mouseleave', (e) => {
         if (!manNav) {
             closeNav()
         }
@@ -601,7 +603,6 @@ async function getUrl() {
     setTimeout(getUrl, 5000);
 }
 
-
 document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
         //console.log("visible");
@@ -613,4 +614,5 @@ document.addEventListener("visibilitychange", () => {
         clearTimeout(fDD);
     }
 });
+
 !function (e, t) { "use strict"; var n = null, a = "PointerEvent" in e || e.navigator && "msPointerEnabled" in e.navigator, i = "ontouchstart" in e || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0, o = 0, r = 0; function m(e) { var n; s(), e = (n = e, void 0 !== n.changedTouches ? n.changedTouches[0] : n), this.dispatchEvent(new CustomEvent("long-press", { bubbles: !0, cancelable: !0, detail: { clientX: e.clientX, clientY: e.clientY, offsetX: e.offsetX, offsetY: e.offsetY, pageX: e.pageX, pageY: e.pageY }, clientX: e.clientX, clientY: e.clientY, offsetX: e.offsetX, offsetY: e.offsetY, pageX: e.pageX, pageY: e.pageY, screenX: e.screenX, screenY: e.screenY })) || t.addEventListener("click", function e(n) { var a; t.removeEventListener("click", e, !0), (a = n).stopImmediatePropagation(), a.preventDefault(), a.stopPropagation() }, !0) } function s(t) { var a; (a = n) && (e.cancelAnimationFrame ? e.cancelAnimationFrame(a.value) : e.webkitCancelAnimationFrame ? e.webkitCancelAnimationFrame(a.value) : e.webkitCancelRequestAnimationFrame ? e.webkitCancelRequestAnimationFrame(a.value) : e.mozCancelRequestAnimationFrame ? e.mozCancelRequestAnimationFrame(a.value) : e.oCancelRequestAnimationFrame ? e.oCancelRequestAnimationFrame(a.value) : e.msCancelRequestAnimationFrame ? e.msCancelRequestAnimationFrame(a.value) : clearTimeout(a)), n = null } function u(e, n, a) { for (; e && e !== t.documentElement;) { var i = e.getAttribute(n); if (i) return i; e = e.parentNode } return a } "function" != typeof e.CustomEvent && (e.CustomEvent = function (e, n) { n = n || { bubbles: !1, cancelable: !1, detail: void 0 }; var a = t.createEvent("CustomEvent"); return a.initCustomEvent(e, n.bubbles, n.cancelable, n.detail), a }, e.CustomEvent.prototype = e.Event.prototype), e.requestAnimFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (t) { e.setTimeout(t, 1e3 / 60) }, t.addEventListener(a ? "pointerup" : i ? "touchend" : "mouseup", s, !0), t.addEventListener(a ? "pointerleave" : i ? "touchleave" : "mouseleave", s, !0), t.addEventListener(a ? "pointermove" : i ? "touchmove" : "mousemove", function e(t) { var n = Math.abs(o - t.clientX), a = Math.abs(r - t.clientY); (n >= 10 || a >= 10) && s(t) }, !0), t.addEventListener("wheel", s, !0), t.addEventListener("scroll", s, !0), t.addEventListener(a ? "pointerdown" : i ? "touchstart" : "mousedown", function t(a) { var i, u; o = a.clientX, r = a.clientY, s(i = a), u = i.target, n = function t(n, a) { if (!e.requestAnimationFrame && !e.webkitRequestAnimationFrame && !(e.mozRequestAnimationFrame && e.mozCancelRequestAnimationFrame) && !e.oRequestAnimationFrame && !e.msRequestAnimationFrame) return e.setTimeout(n, a); var i = new Date().getTime(), o = {}, r = function () { var e; new Date().getTime() - i >= a ? n.call() : o.value = requestAnimFrame(r) }; return o.value = requestAnimFrame(r), o }(m.bind(u, i), 600) }, !0) }(window, document);
