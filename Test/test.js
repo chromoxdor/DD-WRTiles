@@ -235,13 +235,12 @@ async function fetchDD(event) {
         }
 
         if (item.Signal) {
-            html += '<div class=signal><meter value="' + item.Signal / 10 + '" min=0" max="100" title="' + item.Signal / 10 + '%"id="' + item.Name + '" class="slider" ></meter><div class=sQ>' + item.Signal / 10 + '%</div></div>';
+            html += '<div class=signal><meter value="' + item.Signal / 10 + '" min=0" max="100" id="' + item.Name + '" class="slider" ></meter><div class=sQ>' + item.Signal / 10 + '%</div></div>';
         }
 
         else { html += '<div class=signal></div>'; }
 
         html += '</div>';
-
     })
 
     if (isittime) {

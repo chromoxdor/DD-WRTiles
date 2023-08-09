@@ -7,7 +7,7 @@
 }
 
 body {
-   
+
     margin: 0;
     background: #e8e8e8;
     color: #4e4a4a;
@@ -73,12 +73,6 @@ iframe {
     transition: 0.8s ease-out;
 }
 
-#sliderList .sensorset {
-    width: inherit;
-    height: 40px;
-    background: #837c7c;
-}
-
 .clickables:active {
     transform: scale(0.95);
     -webkit-transform: scale(0.95);
@@ -91,7 +85,8 @@ iframe {
     height: 20px;
     width: 100%;
     border-radius: 5px;
-    border: none;
+    border: 0;
+    overflow: hidden;
 }
 
 .sQ {
@@ -103,8 +98,9 @@ iframe {
     height: 20px;
     background: #847d7d;
     border-radius: 5px;
-    border: none;
+    border: 0;
 }
+
 
 .slider::-webkit-meter-optimum-value {
     box-shadow: 0 5px 5px -5px #333 inset;
@@ -115,18 +111,13 @@ iframe {
     box-shadow: 5px 5px 5px -5px #333 inset;
     height: 20px;
     background: #11962e;
-
-
-}
-
-.sensorset:not(.btnTile) {
-    background: #847d7d;
 }
 
 .sensorset {
     display: flex;
     justify-items: stretch;
     flex-direction: column;
+    background: #847d7d;
     padding: 4.2px;
     flex-wrap: nowrap;
     border-radius: 5px;
@@ -134,17 +125,17 @@ iframe {
     overflow: hidden;
     position: relative;
     align-items: stretch;
-    cursor: default;
-}
-
-.response {
-    background: #3e88cb !important;
     cursor: pointer;
 }
 
-.online {
-    background: #2B708E !important;
+.response {
+    background: #3e88cb;
 }
+
+.online {
+    background: #2B708E;
+}
+
 
 .btnTile {
     background: #635d5d;
@@ -189,6 +180,8 @@ iframe {
     z-index: 2;
     width: 100%;
     position: fixed;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .open {
@@ -216,7 +209,6 @@ iframe {
     display: flex;
     flex-direction: column;
     align-items: center;
-    cursor: pointer;
     justify-content: center;
     color: white;
 }
@@ -226,6 +218,7 @@ iframe {
     justify-content: start;
     grid-template-columns: 25px auto;
     align-items: center;
+    cursor: pointer;
 }
 
 .numberUnit {
@@ -233,15 +226,14 @@ iframe {
     color: #818181;
 }
 
-#menueList div:hover {
-    color: #444444
-}
-
 .nc {
     word-break: break-all;
 }
 
 .sideNbtn {
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: pointer;
     position: absolute;
     bottom: 2%;
     font-size: 35px;
@@ -319,7 +311,7 @@ iframe {
     flex-shrink: 999;
 }
 
-.select{
+.select {
     -webkit-user-select: all;
     user-select: all;
 }
@@ -403,11 +395,11 @@ iframe {
         background: #334B5F !important
     }
 
-    .sensorset:not(.btnTile){
+    .sensorset:not(.btnTile) {
         background: #333;
     }
 
-    .sensorset:not(.btnTile){
+    .sensorset:not(.btnTile) {
         background: #444;
     }
 }
