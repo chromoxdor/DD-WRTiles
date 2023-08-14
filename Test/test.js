@@ -1,8 +1,10 @@
 var firstRun = 1;
 //var wasUsed;
 //var slA; //sliderAmount
-var bigLength = 0;
+var columnSet;
 var fDD; //fetchDD interval
+var gURL;
+var bInput; //getURL interval
 var navOpen;
 var myParam;
 var hasParams = 1;
@@ -25,6 +27,7 @@ var prevX = 0;
 var routerIP;
 var nTH = 0;
 var sortMode;
+
 
 async function fetchDD(event) {
     if (!document.cookie.includes("IP=")) { mC("IP"); mC("Adapter") }
@@ -286,45 +289,44 @@ function changeCss() {
     z = numSet; //if there are no big values orient on number of "normal" tiles
     if (z > 20) {
         y = x + x + x + x + x;
-        coloumnSet = 5;
+        columnSet = 5;
     }
     else if (z > 9) {
         y = x + x + x + x;
-        coloumnSet = 4;
+        columnSet = 4;
     }
     else if (z > 4) {
         y = x + x + x;
-        coloumnSet = 3;
+        columnSet = 3;
     }
     else if (z > 1) {
         y = x + x;
-        coloumnSet = 2;
+        columnSet = 2;
     }
     else if (z < 2) {
         y = x;
         m = "important"
-        coloumnSet = 1;
+        columnSet = 1;
     }
     else {
         y = x + x;
-        coloumnSet = 2;
+        columnSet = 2;
     }
 
-    if (window.innerWidth < (165 * coloumnSet) || document.cookie.includes("Two=1") || document.getElementById('framie').offsetWidth > 0 && window.innerWidth < 1500) {
-        coloumnSet = 2; y = x + x
+    if (window.innerWidth < (165 * columnSet) || document.cookie.includes("Two=1") || document.getElementById('framie').offsetWidth > 0 && window.innerWidth < 1500) {
+        columnSet = 2; y = x + x
     };
 
     sList.style.setProperty('grid-template-columns', y, m);
 
     //calculate and add extra tiles
-    if (numSet % coloumnSet != 0 && coloumnSet != 1) {
-        calcTile = coloumnSet - (numSet - coloumnSet * Math.floor(numSet / coloumnSet));
+    if (numSet % columnSet != 0 && columnSet != 1) {
+        calcTile = columnSet - (numSet - columnSet * Math.floor(numSet / columnSet));
         for (let i = 1; i <= calcTile; i++) {
             html += '<div class="sensorset"></div>'
         }
     }
     document.getElementById('sensorList').innerHTML = html;
-    bigLength = 0;
 
     toScale();
 }
@@ -362,11 +364,12 @@ function eventLS() {
     selectButtons.forEach(selectButton => {
         selectButton.addEventListener('click', (e) => {
             isittime = 0 
-            setTimeout(blurInput, 10000)
+            bInput = setTimeout(blurInput, 10000)
             e.stopPropagation();
         })
         selectButton.addEventListener('mouseleave', (e) => {
             isittime = 1 
+            clearTimeout(bInput);
             e.stopPropagation();
         })
     })
@@ -374,7 +377,7 @@ function eventLS() {
 
 function toScale() {
     scaleItm = document.getElementById('allList')
-    if (document.body.clientWidth < scaleItm.offsetWidth) {
+    if (document.body.clientWidth < scaleItm.offsetWidth && columnSet == 2) {
         scaleItm.style.translate = "0 " + -(scaleItm.offsetHeight - ((document.body.clientWidth / scaleItm.offsetWidth) * scaleItm.offsetHeight)) / 2 + "px";
         scaleItm.style.transform = 'scale(' + document.body.clientWidth / (scaleItm.offsetWidth + 20) + ')';
     }
@@ -604,8 +607,6 @@ function storeData(x) {
 }*/
 
 async function getUrl() {
-
-    //dataT2 = []
     for (Array of dataT) {
         let status = 0
         let found = 0
