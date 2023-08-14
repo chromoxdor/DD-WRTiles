@@ -41,13 +41,34 @@ iframe {
     border: 0;
     background: gray;
     box-shadow: 4px 0 13px -7px #000000;
+    animation: fadeEffect 0.8s;
+}
+
+@-webkit-keyframes fadeEffect {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeEffect {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 #allList {
     display: flex;
     grid-row-gap: 1vh;
     margin: auto;
-    padding: 5px;
+    padding: 10px;
     transition: 0.8s ease-out;
     flex-direction: column;
     padding-bottom: 40px;
@@ -121,7 +142,7 @@ iframe {
     padding: 4.2px;
     flex-wrap: nowrap;
     border-radius: 5px;
-    width: 155px;
+    width: 165px;
     overflow: hidden;
     position: relative;
     align-items: stretch;
@@ -143,8 +164,8 @@ iframe {
 }
 
 .sensors {
-    padding-bottom: 4px;
-    overflow-wrap: anywhere;
+    padding-bottom: 6px;
+    overflow-wrap: break-word;
 }
 
 .signal {
@@ -269,10 +290,10 @@ iframe {
 
 #dateV {
     opacity: 0;
+    top: 10px;
+    writing-mode: vertical-lr;
     position: fixed;
     pointer-events: none;
-    bottom: 27px;
-    left: 45px;
 }
 
 #sysInfo {

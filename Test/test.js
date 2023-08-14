@@ -26,7 +26,6 @@ var routerIP;
 var nTH = 0;
 var sortMode;
 
-
 async function fetchDD(event) {
     if (!document.cookie.includes("IP=")) { mC("IP"); mC("Adapter") }
     //invert color scheme----------
@@ -47,7 +46,6 @@ async function fetchDD(event) {
     //-----DDTextToJSON-----------------------------------------------------------------
     const DDTextToJSON = (data, delimiter = ',') => {
         const titles = data.slice(0, data.indexOf(';') - 1).split(delimiter);
-        //console.log(titles)
         return data
             .slice(data.indexOf(';') + 2)
             .split(',;,')
@@ -121,8 +119,7 @@ async function fetchDD(event) {
         WiFiArray.splice(i, 0, ';');
     }
     WiFiArray = WiFiArray.toString();
-    WiFiArray = WiFiArray.replace(/day,/g, 'd');
-    WiFiArray = WiFiArray.replace(/days,/g, 'd');
+    WiFiArray = WiFiArray.replace(/ day,/g, 'd').replace(/ days,/g, 'd');
     WiFiArray = WiFiArray.slice(1, -1)
     WiFiArray = "MAC,1,WiFi,2,RX,TX,Mode,3,4,5,Signal,6,7,8,9,10,11,;," + WiFiArray
 
@@ -140,7 +137,6 @@ async function fetchDD(event) {
         ...item,
     }));
 
-
     //-----get sort method-----------------------------------------------------------------
     if (!document.cookie.includes("Sort=")) { document.cookie = "Sort=NameUP;expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;'" };
     cookieK = document.cookie.split("; ")
@@ -155,21 +151,27 @@ async function fetchDD(event) {
         if (sortMode.includes("Name")) {
             return a.Name.toLowerCase() === b.Name.toLowerCase() ? 0 : a.Name.toLowerCase() > b.Name.toLowerCase() ? 1 : -1;
         }
-        if (sortMode.includes("Signal")) {
-            return (a.Signal / 10) - (b.Signal / 10);
+        else if (sortMode.includes("Signal")) {
+            if (a.Signal) {
+                return (a.Signal) - (b.Signal);
+            }
+            else return -1
         }
-        if (sortMode.includes("IP")) {
+        else if (sortMode.includes("IP")) {
             return (a.IP.split(".").pop()) - (b.IP.split(".").pop());
         }
-        if (sortMode.includes("Uptime")) {
-            return (a.Uptime) - (b.Uptime);
+        else if (sortMode.includes("Uptime")) {
+            if (a[2] && b[2]) {
+                return (a[2].replace(/d/g, '').split(":", 2).join(".")) - (b[2].replace(/d/g, '').split(":", 2).join("."));
+            }
+            else return -1
         }
     });
 
     if (sortMode.includes("DN")) {
         result.reverse()
     }
-    if (sortMode.includes("Signal")) {
+    if (sortMode.includes("Signal") || sortMode.includes("Uptime")) {
         result1 = [
             ...result.filter(x => x.Signal)];
         result2 = [
@@ -225,7 +227,7 @@ async function fetchDD(event) {
         }
 
         if (document.cookie.includes("Uptime=1")) {
-            if (item.Signal) { html += '<div class=row><div class=odd>Up:</div><div class=even>' + item[2] + '</div></div>'; }
+            if (item[2]) { uT = item[2].split(":", 2).join("h") + "m"; html += '<div class=row><div class=odd>Up:</div><div class=even>' + uT + '</div></div>'; }
             else { html += '<div class=row><div class=odd>Up:</div><div class=even>N.A.</div></div>'; }
         }
 
@@ -235,6 +237,9 @@ async function fetchDD(event) {
         }
 
         if (item.Signal) {
+            if (document.cookie.includes("RX,TX=1")) {
+                html += '<div class=row><div class=odd>TX:' + item.TX + '</div><div class=even>RX:' + item.RX + '</div></div>';
+            }
             html += '<div class=signal><meter value="' + item.Signal / 10 + '" min=0" max="100" id="' + item.Name + '" class="slider" ></meter><div class=sQ>' + item.Signal / 10 + '%</div></div>';
         }
 
@@ -256,7 +261,7 @@ async function fetchDD(event) {
             getUrl()
             longPressS();
             longPressN();
-            addEonce()
+            addEonce();
             firstRun = 0;
         }
         //document.getElementById('unitId').innerHTML = routerIP;
@@ -275,7 +280,11 @@ function changeCss() {
     var sList = document.getElementById("sensorList");
     var numSet = sList.getElementsByClassName('sensorset').length;
     z = numSet; //if there are no big values orient on number of "normal" tiles
-    if (z > 9) {
+    if (z > 20) {
+        y = x + x + x + x + x;
+        coloumnSet = 5;
+    }
+    else if (z > 9) {
         y = x + x + x + x;
         coloumnSet = 4;
     }
@@ -312,6 +321,8 @@ function changeCss() {
     }
     document.getElementById('sensorList').innerHTML = html;
     bigLength = 0;
+
+    toScale();
 }
 
 function addEonce() {
@@ -337,6 +348,21 @@ function addEonce() {
             closeNav()
         }
     })
+    window.addEventListener('resize', (e) => {
+        toScale();
+    })
+}
+
+function toScale() {
+    scaleItm = document.getElementById('allList')
+    if (document.body.clientWidth < scaleItm.offsetWidth) {
+        scaleItm.style.translate = "0 " + -(scaleItm.offsetHeight - ((document.body.clientWidth / scaleItm.offsetWidth) * scaleItm.offsetHeight)) / 2 + "px";
+        scaleItm.style.transform = 'scale(' + document.body.clientWidth / (scaleItm.offsetWidth + 20) + ')';
+    }
+    else {
+        scaleItm.style.transform = 'scale(1)';
+        scaleItm.style.translate = "0";
+    }
 }
 
 function checkDirection() {
@@ -381,7 +407,7 @@ function closeNav() {
 
 function makeMenu() {
     let sortArray = [{ "sort": ["NameUP", "NameDN"], "name": "Name" }, { "sort": ["SignalUP", "SignalDN"], "name": "Signal" }, { "sort": ["IPUP", "IPDN"], "name": "IP" }, { "sort": ["UptimeUP", "UptimeDN"], "name": "Uptime" }];
-    let showArray = ["IP", "Adapter", "Lease", "Uptime", "MAC"]
+    let showArray = ["IP", "Adapter", "Lease", "Uptime", "MAC", "RX,TX"]
     symUP = "&#9650;&#xFE0E";
     symDn = "&#9660;&#xFE0E";
     sym0 = "&#x2610;&#xFE0E"
@@ -599,7 +625,7 @@ async function getUrl() {
         }
 
     }
-    setTimeout(getUrl, 5000);
+    setTimeout(getUrl, 2000);
 }
 
 document.addEventListener("visibilitychange", () => {
@@ -613,4 +639,4 @@ document.addEventListener("visibilitychange", () => {
         clearTimeout(fDD);
     }
 });
-!function(e,t){"use strict";var n=null,a="PointerEvent"in e||e.navigator&&"msPointerEnabled"in e.navigator,i="ontouchstart"in e||navigator.MaxTouchPoints>0||navigator.msMaxTouchPoints>0,o=0,r=0;function m(e){var n;s(),e=(n=e,void 0!==n.changedTouches?n.changedTouches[0]:n),this.dispatchEvent(new CustomEvent("long-press",{bubbles:!0,cancelable:!0,detail:{clientX:e.clientX,clientY:e.clientY,offsetX:e.offsetX,offsetY:e.offsetY,pageX:e.pageX,pageY:e.pageY},clientX:e.clientX,clientY:e.clientY,offsetX:e.offsetX,offsetY:e.offsetY,pageX:e.pageX,pageY:e.pageY,screenX:e.screenX,screenY:e.screenY}))||t.addEventListener("click",function e(n){var a;t.removeEventListener("click",e,!0),(a=n).stopImmediatePropagation(),a.preventDefault(),a.stopPropagation()},!0)}function s(t){var a;(a=n)&&(e.cancelAnimationFrame?e.cancelAnimationFrame(a.value):e.webkitCancelAnimationFrame?e.webkitCancelAnimationFrame(a.value):e.webkitCancelRequestAnimationFrame?e.webkitCancelRequestAnimationFrame(a.value):e.mozCancelRequestAnimationFrame?e.mozCancelRequestAnimationFrame(a.value):e.oCancelRequestAnimationFrame?e.oCancelRequestAnimationFrame(a.value):e.msCancelRequestAnimationFrame?e.msCancelRequestAnimationFrame(a.value):clearTimeout(a)),n=null}"function"!=typeof e.CustomEvent&&(e.CustomEvent=function(e,n){n=n||{bubbles:!1,cancelable:!1,detail:void 0};var a=t.createEvent("CustomEvent");return a.initCustomEvent(e,n.bubbles,n.cancelable,n.detail),a},e.CustomEvent.prototype=e.Event.prototype),e.requestAnimFrame=e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.oRequestAnimationFrame||e.msRequestAnimationFrame||function(t){e.setTimeout(t,1e3/60)},t.addEventListener(a?"pointerup":i?"touchend":"mouseup",s,!0),t.addEventListener(a?"pointerleave":i?"touchleave":"mouseleave",s,!0),t.addEventListener(a?"pointermove":i?"touchmove":"mousemove",function e(t){var n=Math.abs(o-t.clientX),a=Math.abs(r-t.clientY);(n>=10||a>=10)&&s(t)},!0),t.addEventListener("wheel",s,!0),t.addEventListener("scroll",s,!0),t.addEventListener(a?"pointerdown":i?"touchstart":"mousedown",function a(i){var u,c,l;o=i.clientX,r=i.clientY,s(u=i),l=parseInt(function e(n,a,i){for(;n&&n!==t.documentElement;){var o=n.getAttribute(a);if(o)return o;n=n.parentNode}return i}(c=u.target,"data-long-press-delay","1500"),10),n=function t(n,a){if(!e.requestAnimationFrame&&!e.webkitRequestAnimationFrame&&!(e.mozRequestAnimationFrame&&e.mozCancelRequestAnimationFrame)&&!e.oRequestAnimationFrame&&!e.msRequestAnimationFrame)return e.setTimeout(n,a);var i=new Date().getTime(),o={},r=function(){var e;new Date().getTime()-i>=a?n.call():o.value=requestAnimFrame(r)};return o.value=requestAnimFrame(r),o}(m.bind(c,u),l)},!0)}(window,document);
+!function (e, t) { "use strict"; var n = null, a = "PointerEvent" in e || e.navigator && "msPointerEnabled" in e.navigator, i = "ontouchstart" in e || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0, o = 0, r = 0; function m(e) { var n; s(), e = (n = e, void 0 !== n.changedTouches ? n.changedTouches[0] : n), this.dispatchEvent(new CustomEvent("long-press", { bubbles: !0, cancelable: !0, detail: { clientX: e.clientX, clientY: e.clientY, offsetX: e.offsetX, offsetY: e.offsetY, pageX: e.pageX, pageY: e.pageY }, clientX: e.clientX, clientY: e.clientY, offsetX: e.offsetX, offsetY: e.offsetY, pageX: e.pageX, pageY: e.pageY, screenX: e.screenX, screenY: e.screenY })) || t.addEventListener("click", function e(n) { var a; t.removeEventListener("click", e, !0), (a = n).stopImmediatePropagation(), a.preventDefault(), a.stopPropagation() }, !0) } function s(t) { var a; (a = n) && (e.cancelAnimationFrame ? e.cancelAnimationFrame(a.value) : e.webkitCancelAnimationFrame ? e.webkitCancelAnimationFrame(a.value) : e.webkitCancelRequestAnimationFrame ? e.webkitCancelRequestAnimationFrame(a.value) : e.mozCancelRequestAnimationFrame ? e.mozCancelRequestAnimationFrame(a.value) : e.oCancelRequestAnimationFrame ? e.oCancelRequestAnimationFrame(a.value) : e.msCancelRequestAnimationFrame ? e.msCancelRequestAnimationFrame(a.value) : clearTimeout(a)), n = null } "function" != typeof e.CustomEvent && (e.CustomEvent = function (e, n) { n = n || { bubbles: !1, cancelable: !1, detail: void 0 }; var a = t.createEvent("CustomEvent"); return a.initCustomEvent(e, n.bubbles, n.cancelable, n.detail), a }, e.CustomEvent.prototype = e.Event.prototype), e.requestAnimFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (t) { e.setTimeout(t, 1e3 / 60) }, t.addEventListener(a ? "pointerup" : i ? "touchend" : "mouseup", s, !0), t.addEventListener(a ? "pointerleave" : i ? "touchleave" : "mouseleave", s, !0), t.addEventListener(a ? "pointermove" : i ? "touchmove" : "mousemove", function e(t) { var n = Math.abs(o - t.clientX), a = Math.abs(r - t.clientY); (n >= 10 || a >= 10) && s(t) }, !0), t.addEventListener("wheel", s, !0), t.addEventListener("scroll", s, !0), t.addEventListener(a ? "pointerdown" : i ? "touchstart" : "mousedown", function a(i) { var u, c, l; o = i.clientX, r = i.clientY, s(u = i), l = parseInt(function e(n, a, i) { for (; n && n !== t.documentElement;) { var o = n.getAttribute(a); if (o) return o; n = n.parentNode } return i }(c = u.target, "data-long-press-delay", "600"), 10), n = function t(n, a) { if (!e.requestAnimationFrame && !e.webkitRequestAnimationFrame && !(e.mozRequestAnimationFrame && e.mozCancelRequestAnimationFrame) && !e.oRequestAnimationFrame && !e.msRequestAnimationFrame) return e.setTimeout(n, a); var i = new Date().getTime(), o = {}, r = function () { var e; new Date().getTime() - i >= a ? n.call() : o.value = requestAnimFrame(r) }; return o.value = requestAnimFrame(r), o }(m.bind(c, u), l) }, !0) }(window, document);
