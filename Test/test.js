@@ -28,6 +28,7 @@ var sortMode;
 
 async function fetchDD(event) {
     if (!document.cookie.includes("IP=")) { mC("IP"); mC("Adapter") }
+    if (!document.cookie.includes("Offline=")) { mC("Offline") }
     //invert color scheme----------
     try {
         for (Array of document.styleSheets) {
@@ -185,67 +186,69 @@ async function fetchDD(event) {
     //----Make Tiles--------------------------------------------------------------
     html = ''
     result.forEach(item => {
-        if (item.Time && item.Time != "Static") {
-            d = item.Time.split(" ")[0] + "d ";
-            r = item.Time.split(" ")[2];
-            r = r.split(":")
-            r.pop()
-            r = r.join(":")
-            lTime = d + r;
-        }
-        bS = '';
-
-        if ((item.WiFi && item.Signal) || (!item.Signal && item.arp1)) { bS = "online"; }
-        dataT2.forEach(item2 => {
-            if (item2.IP == item.IP) {
-                if (!item.Signal && !item.arp1) { bS = ""; }
-                if (!item.Signal && item2.Status > 1 && item.arp1) { bS = "online"; }
-                else if (!item.Signal && (item2.Status == 1 || item.arp1)) { bS = "response"; }
-                else if (item.Signal && item2.Status == 1) { bS = "response"; }
+        if (document.cookie.includes("Offline=1") || (document.cookie.includes("Offline=0") && item.Signal || item.arp1)) {
+            if (item.Time && item.Time != "Static") {
+                d = item.Time.split(" ")[0] + "d ";
+                r = item.Time.split(" ")[2];
+                r = r.split(":")
+                r.pop()
+                r = r.join(":")
+                lTime = d + r;
             }
-        })
-        html += '<div class=" sensorset ' + bS;
-        if (bS == "response") { html += ' clickables" onclick="playSound(3000), splitOn(\'' + item.IP + '\'), topF()' }
-        html += '">'
+            bS = '';
 
-        html += '<div  class="sensors" id="' + item.IP + '" style="font-weight:bold;">' + item.Name + '</div>';
+            if ((item.WiFi && item.Signal) || (!item.Signal && item.arp1)) { bS = "online"; }
+            dataT2.forEach(item2 => {
+                if (item2.IP == item.IP) {
+                    if (!item.Signal && !item.arp1) { bS = ""; }
+                    if (!item.Signal && item2.Status > 1 && item.arp1) { bS = "online"; }
+                    else if (!item.Signal && (item2.Status == 1 || item.arp1)) { bS = "response"; }
+                    else if (item.Signal && item2.Status == 1) { bS = "response"; }
+                }
+            })
+            html += '<div class=" sensorset ' + bS;
+            if (bS == "response") { html += ' clickables" onclick="playSound(3000), splitOn(\'' + item.IP + '\'), topF()' }
+            html += '">'
 
-        if (document.cookie.includes("IP=1")) {
-            html += '<div class=row><div class=odd>IP:</div><div class="even select" id="IP">' + item.IP + '</div></div>';
-        }
+            html += '<div  class="sensors" id="' + item.IP + '" style="font-weight:bold;">' + item.Name + '</div>';
 
-        if (document.cookie.includes("Adapter=1")) {
-            if (bS != '') {
-                if (item.Signal) { html += '<div class=row><div class=odd>Adapter:</div><div class=even>' + item.WiFi + '</div></div>'; }
-                else { html += '<div class=row><div class=odd>Adapter:</div><div class=even>LAN</div></div>'; }
+            if (document.cookie.includes("IP=1")) {
+                html += '<div class=row><div class=odd>IP:</div><div class="even select" id="IP">' + item.IP + '</div></div>';
             }
-            else { html += '<div class=row><div class=odd>Adapter:</div><div class=even>offline</div></div>'; }
-        }
 
-        if (document.cookie.includes("Lease=1")) {
-            html += '<div class=row><div class=odd>Lease:</div><div class=even>' + lTime + '</div></div>';
-        }
-
-        if (document.cookie.includes("Uptime=1")) {
-            if (item[2]) { uT = item[2].split(":", 2).join("h") + "m"; html += '<div class=row><div class=odd>Up:</div><div class=even>' + uT + '</div></div>'; }
-            else { html += '<div class=row><div class=odd>Up:</div><div class=even>N.A.</div></div>'; }
-        }
-
-        if (document.cookie.includes("MAC=1")) {
-            //html += '<div class=row style="align-self:center"><div class=even>' + item.MAC + '</div></div>';
-            html += '<div class=row style="align-self:center"><div class="even select" id="MAC">' + item.MAC + '</div></div>';
-        }
-
-        if (item.Signal) {
-            if (document.cookie.includes("RX,TX=1")) {
-                html += '<div class=row><div class=odd>TX:' + item.TX + '</div><div class=even>RX:' + item.RX + '</div></div>';
+            if (document.cookie.includes("Adapter=1")) {
+                if (bS != '') {
+                    if (item.Signal) { html += '<div class=row><div class=odd>Adapter:</div><div class=even>' + item.WiFi + '</div></div>'; }
+                    else { html += '<div class=row><div class=odd>Adapter:</div><div class=even>LAN</div></div>'; }
+                }
+                else { html += '<div class=row><div class=odd>Adapter:</div><div class=even>offline</div></div>'; }
             }
-            html += '<div class=signal><meter value="' + item.Signal / 10 + '" min=0" max="100" id="' + item.Name + '" class="slider" ></meter><div class=sQ>' + item.Signal / 10 + '%</div></div>';
+
+            if (document.cookie.includes("Lease=1")) {
+                html += '<div class=row><div class=odd>Lease:</div><div class=even>' + lTime + '</div></div>';
+            }
+
+            if (document.cookie.includes("Uptime=1")) {
+                if (item[2]) { uT = item[2].split(":", 2).join("h") + "m"; html += '<div class=row><div class=odd>Up:</div><div class=even>' + uT + '</div></div>'; }
+                else { html += '<div class=row><div class=odd>Up:</div><div class=even>N.A.</div></div>'; }
+            }
+
+            if (document.cookie.includes("MAC=1")) {
+                //html += '<div class=row style="align-self:center"><div class=even>' + item.MAC + '</div></div>';
+                html += '<div class=row style="align-self:center"><div class="even select" id="MAC">' + item.MAC + '</div></div>';
+            }
+
+            if (item.Signal) {
+                if (document.cookie.includes("RX,TX=1")) {
+                    html += '<div class=row><div class=odd>TX:' + item.TX + '</div><div class=even>RX:' + item.RX + '</div></div>';
+                }
+                html += '<div class=signal><meter value="' + item.Signal / 10 + '" min=0" max="100" id="' + item.Name + '" class="slider" ></meter><div class=sQ>' + item.Signal / 10 + '%</div></div>';
+            }
+
+            else { html += '<div class=signal></div>'; }
+
+            html += '</div>';
         }
-
-        else { html += '<div class=signal></div>'; }
-
-        html += '</div>';
     })
 
     if (isittime) {
@@ -407,7 +410,7 @@ function closeNav() {
 
 function makeMenu() {
     let sortArray = [{ "sort": ["NameUP", "NameDN"], "name": "Name" }, { "sort": ["SignalUP", "SignalDN"], "name": "Signal" }, { "sort": ["IPUP", "IPDN"], "name": "IP" }, { "sort": ["UptimeUP", "UptimeDN"], "name": "Uptime" }];
-    let showArray = ["IP", "Adapter", "Lease", "Uptime", "MAC", "RX,TX"]
+    let showArray = ["IP", "Adapter", "Lease", "Uptime", "MAC", "RX,TX", "Offline"]
     symUP = "&#9650;&#xFE0E";
     symDn = "&#9660;&#xFE0E";
     sym0 = "&#x2610;&#xFE0E"
