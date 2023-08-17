@@ -7,10 +7,9 @@
 }
 
 body {
-
     margin: 0;
-    background: #e8e8e8;
-    color: #4e4a4a;
+    background: #212121;
+        color: #b3b3b3;
 }
 
 
@@ -20,13 +19,15 @@ body {
 
 #container {
     display: flex;
-    position: absolute;
+    position: fixed;
     height: 100vh;
     width: 100vw;
-    justify-content: center;
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 #framie {
+    max-width: 1100px;
     height: 100%;
     transition: 0.8s;
     position: relative;
@@ -66,19 +67,26 @@ iframe {
 
 #allList {
     display: flex;
-    grid-row-gap: 1vh;
+    height: 100vh;
+    min-width: 360px;
     margin: auto;
+    overflow-y: scroll;
+    overflow-x: clip;
+    grid-row-gap: 1vh;
     padding: 10px;
-    transition: 0.8s ease-out;
     flex-direction: column;
-    padding-bottom: 40px;
-    padding-top: 40px;
-    color: white;
+    padding-bottom: 60px;
+    color: #d9d9d9;
     text-shadow: 0 .5px 0 #1e1e1e;
+    scrollbar-width: none; 
 }
 
+#allList::-webkit-scrollbar {
+    display: none;
+  }
+
 #allList>div>* {
-    box-shadow: 0 0 10px 1px rgb(0 0 0 / 25%), inset 0px 0px 0px 0.5px #7b7b7b;
+    box-shadow: 0 0 10px 1px rgb(0 0 0 / 30%), inset 0px 0px 0px 0.5px #7b7b7b;
 }
 
 .allExtra {
@@ -91,10 +99,12 @@ iframe {
     display: grid;
     gap: 1vh;
     justify-content: center;
+    margin: auto;
     transition: 0.8s ease-out;
 }
 
-.clickables:active {
+.clickables:active,
+#submitBtn:active {
     transform: scale(0.95);
     -webkit-transform: scale(0.95);
     transition: 0.1s
@@ -102,7 +112,7 @@ iframe {
 
 .slider {
     box-shadow: 5px 5px 5px -5px #333 inset;
-    background: #847d7d;
+    background: #444444;
     height: 20px;
     width: 100%;
     border-radius: 5px;
@@ -125,20 +135,20 @@ iframe {
 
 .slider::-webkit-meter-optimum-value {
     box-shadow: 0 5px 5px -5px #333 inset;
-    background: #11962e;
+    background: #12842b;
 }
 
 .slider::-moz-meter-bar {
     box-shadow: 5px 5px 5px -5px #333 inset;
     height: 20px;
-    background: #11962e;
+    background: #12842b;
 }
 
 .sensorset {
     display: flex;
     justify-items: stretch;
     flex-direction: column;
-    background: #847d7d;
+    background: #444;
     padding: 4.2px;
     flex-wrap: nowrap;
     border-radius: 5px;
@@ -150,17 +160,11 @@ iframe {
 }
 
 .response {
-    background: #3e88cb;
+    background: #495d88
 }
 
 .online {
-    background: #2B708E;
-}
-
-
-.btnTile {
-    background: #635d5d;
-    min-height: 60px;
+    background: #334B5F
 }
 
 .sensors {
@@ -197,7 +201,9 @@ iframe {
 }
 
 #opener {
+    background: #000000a8;
     bottom: 0;
+    height: 55px;
     z-index: 2;
     width: 100%;
     position: fixed;
@@ -305,7 +311,7 @@ iframe {
     height: 0;
     overflow: hidden;
     position: absolute;
-    top: 5px;
+    top: 10px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -314,10 +320,13 @@ iframe {
 .syspair {
     display: flex;
     justify-content: flex-start;
+    align-items: center;
+    padding: 0 4px 0 4px;
 }
 
 .syspair>div {
-    font-size: 8pt !important;
+    font-size: 10pt !important;
+    cursor: pointer;
 }
 
 .syspair div:nth-child(1) {
@@ -325,16 +334,55 @@ iframe {
     width: 35%;
     padding-right: 5px;
 }
+#submitBtn {
+    height: 20px;
+    width: 20px;
+    background-color: #d9d9d9;
+    border-radius: 50%;
+    margin: auto;
+    text-align: center;
+    display: flex;
+    color: #334b5f;
+    box-shadow: 1px 1px 2px 0px #000;
+    align-items: center;
+    justify-content: center;
+}
 
 .menueWrap {
     transition: .5s;
-    height: 185px;
+    height: 95px;
     flex-shrink: 999;
 }
 
 .select {
     -webkit-user-select: all;
     user-select: all;
+}
+
+input {
+    height: 25px;
+    width: 84%;
+    font-size: 10pt;
+    border: 0;
+    background: #444444;
+    text-align: center;
+    color: inherit;
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px -5px #333 inset;
+}
+
+.input:focus-visible {
+    width: inherit;
+}
+
+input:focus::placeholder {
+    opacity: 0.2;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 @media screen and (max-height: 450px) {
@@ -378,49 +426,5 @@ iframe {
 
     .sensors {
         padding-bottom: 2%
-    }
-}
-
-@media (prefers-color-scheme: dark) {
-    body {
-        background: #212121;
-        color: #b3b3b3;
-    }
-
-    input::placeholder,
-    #allList {
-        color: #d9d9d9;
-    }
-
-    #opener {
-        background: #000000a8;
-    }
-
-    .slider {
-        background: #444444;
-    }
-
-    .slider::-webkit-meter-optimum-value {
-        background: #12842b;
-    }
-
-    .slider::-moz-meter-bar {
-        background: #12842b;
-    }
-
-    .response {
-        background: #495d88 !important;
-    }
-
-    .online {
-        background: #334B5F !important
-    }
-
-    .sensorset:not(.btnTile) {
-        background: #333;
-    }
-
-    .sensorset:not(.btnTile) {
-        background: #444;
     }
 }
