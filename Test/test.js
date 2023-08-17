@@ -445,14 +445,9 @@ function addEonce() {
     window.addEventListener('resize', (e) => {
         isittime = 0
         clearTimeout(bInput);
+        bInput = setTimeout(blurInput, 1000)
         toScale();
     })
-    document.getElementById('framie').addEventListener('resize', (e) => {
-        isittime = 0
-        clearTimeout(bInput);
-        toScale();
-    })
-
 }
 
 //##############################################################################################################
