@@ -9,7 +9,7 @@
 body {
     margin: 0;
     background: #212121;
-        color: #b3b3b3;
+    color: #b3b3b3;
 }
 
 
@@ -78,12 +78,12 @@ iframe {
     padding-bottom: 60px;
     color: #d9d9d9;
     text-shadow: 0 .5px 0 #1e1e1e;
-    scrollbar-width: none; 
+    scrollbar-width: none;
 }
 
 #allList::-webkit-scrollbar {
     display: none;
-  }
+}
 
 #allList>div>* {
     box-shadow: 0 0 10px 1px rgb(0 0 0 / 30%), inset 0px 0px 0px 0.5px #7b7b7b;
@@ -334,6 +334,7 @@ iframe {
     width: 35%;
     padding-right: 5px;
 }
+
 #submitBtn {
     height: 20px;
     width: 20px;
@@ -348,9 +349,14 @@ iframe {
     justify-content: center;
 }
 
+#cPicker {
+    width: 35px;
+    margin: 0 15px;
+}
+
 .menueWrap {
     transition: .5s;
-    height: 95px;
+    height: 115px;
     flex-shrink: 999;
 }
 

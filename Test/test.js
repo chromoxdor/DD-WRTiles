@@ -23,18 +23,21 @@ var routerIP;
 var nTH = 0;
 var sortMode;
 var newAmmount;
+var bgContent;
+var cText = ';expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;'
 
 //##############################################################################################################
 //      FETCH
 //##############################################################################################################
-async function fetchDD(event) {
+async function fetchDD() {
 
     // no cookies? make some!
     if (!document.cookie.includes("IP=")) { mC("IP"); mC("Adapter") }
     if (!document.cookie.includes("Offline=")) { mC("Offline") }
     if (!document.cookie.includes("Sound=")) { mC("Sound") }
     if (!document.cookie.includes("Background=")) { mC("Background") }
-
+    if (!document.cookie.includes("bgURL=")) { mC("bgURL",1) }
+    bgContent = document.cookie.slice(document.cookie.indexOf('bgURL=') + 6).split(";")[0]
     //-----DDTextToJSON-----------------------------------------------------------------
     const DDTextToJSON = (data, delimiter = ',') => {
         const titles = data.slice(0, data.indexOf(';') - 1).split(delimiter);
@@ -324,6 +327,10 @@ function makeMenu() {
         html5 += '<div class="syspair" onclick="mC(\'' + item + '\');setTimeout(makeMenu, 500)"><div>' + chkSym + '</div><div>' + item + '</div></div>'
         if (item == "Background") {
             html5 += '<div class="syspair"><input type="text" id="bgURL" name="bgURL" placeholder="paste background URL"><div id="submitBtn" >&#10004;&#xFE0E;</div></div>';
+            bgC = "#14842a"
+            if (bgContent.startsWith('#')) { bgC = bgContent }
+            html5 += '<div class="syspair"><input type="color" id="cPicker" value="' + bgC + '"><div>or pick a color</div></div>';
+
         }
     });
 
@@ -336,16 +343,27 @@ function makeMenu() {
 //     STYLING SECTION
 //##############################################################################################################
 function changeCss() {
+    container = document.getElementById("container")
+    sBtn = document.getElementById("submitBtn")
     if (document.cookie.includes("Background=1")) {
-        if (document.cookie.slice(document.cookie.indexOf('bgURL=') + 6).split(";")[0]) {
-            document.getElementById("container").style.backgroundImage = "url(" + document.cookie.slice(document.cookie.indexOf('bgURL=') + 6).split(";")[0] + ")";
+        if (bgContent) {
+            if (bgContent.startsWith('#')) {
+                container.style.backgroundImage = "none";
+                container.style.backgroundColor = bgContent;
+                sBtn.style.color = "black"
+            }
+            else {
+                container.style.backgroundImage = "url(" + bgContent + ")";
+                sBtn.style.color = "green"
+            }
+
         }
         else {
-            document.getElementById("container").style.backgroundImage = "url(https://images.pexels.com/photos/2068411/pexels-photo-2068411.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)";
+            container.style.backgroundImage = "url(https://images.pexels.com/photos/2068411/pexels-photo-2068411.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2)";
         }
     }
     else if (document.cookie.includes("Background=0")) {
-        document.getElementById("container").style.backgroundImage = "none";
+        container.style.backgroundImage = "none";
     }
     toScale("true");
 }
@@ -373,16 +391,16 @@ function toScale() {
         colAmmount = 2;
     };
 
-    if (colAmmount < 2 || document.cookie.includes("Two=1")) {colAmmount = 2;}
+    if (colAmmount < 2 || document.cookie.includes("Two=1")) { colAmmount = 2; }
     for (let i = 0; i < colAmmount; i++) {
         y = y + x
     }
 
     scaleItm.style.setProperty('grid-template-columns', y, m);
 
-    if ((document.body.clientWidth -20)  < scaleItm.offsetWidth && colAmmount == 2) {
-        scaleItm.style.transform = 'scale(' + (document.body.clientWidth - 20)  / scaleItm.offsetWidth + ')';
-        xTrans = (scaleItm.offsetWidth + 10 - (scaleItm.offsetWidth * (document.body.clientWidth - 20)  / scaleItm.offsetWidth)) / 2 
+    if ((document.body.clientWidth - 20) < scaleItm.offsetWidth && colAmmount == 2) {
+        scaleItm.style.transform = 'scale(' + (document.body.clientWidth - 20) / scaleItm.offsetWidth + ')';
+        xTrans = (scaleItm.offsetWidth + 10 - (scaleItm.offsetWidth * (document.body.clientWidth - 20) / scaleItm.offsetWidth)) / 2
         scaleItm.style.translate = -xTrans + "px " + -(scaleItm.offsetHeight - ((document.body.clientWidth / scaleItm.offsetWidth) * scaleItm.offsetHeight)) / 2 + "px";
     }
     else {
@@ -481,7 +499,7 @@ function eventLS() {
         playSound(1000);
         isittime = 1
         clearTimeout(bInput);
-        document.cookie = 'bgURL=' + document.getElementById('bgURL').value + ';expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;'
+        document.cookie = 'bgURL=' + document.getElementById('bgURL').value + cText
         fetchDD();
     })
     document.getElementById('bgURL').addEventListener("keypress", function (event) {
@@ -490,9 +508,24 @@ function eventLS() {
             event.preventDefault();
             isittime = 1
             clearTimeout(bInput);
-            document.cookie = 'bgURL=' + document.getElementById('bgURL').value + ';expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;'
+            document.cookie = 'bgURL=' + document.getElementById('bgURL').value + cText
             fetchDD();
         }
+    });
+    document.getElementById('cPicker').addEventListener("click", (e) => {
+        isittime = 0
+        clearTimeout(bInput);
+        bInput = setTimeout(blurInput, 10000)
+    });
+    document.getElementById('cPicker').addEventListener("focusout", (e) => {
+        isittime = 1
+        clearTimeout(bInput);
+    });
+    document.getElementById('cPicker').addEventListener("input", (e) => {
+        console.log(document.getElementById('cPicker').value)
+        document.cookie = 'bgURL=' + document.getElementById('cPicker').value + cText
+        document.getElementById("container").style.backgroundImage = "none";
+        document.getElementById("container").style.backgroundColor = document.getElementById('cPicker').value
     });
 }
 
@@ -662,7 +695,7 @@ function closeNav() {
 function openSys() {
     if (document.getElementById('sysInfo').offsetHeight === 0) {
         document.getElementById('menueWrap1').style.flexShrink = "0";
-        document.getElementById('sysInfo').style.height = "80px";
+        document.getElementById('sysInfo').style.height = "105px";
     } else {
         document.getElementById('sysInfo').style.height = "0";
         document.getElementById('menueWrap1').style.flexShrink = "999";
@@ -688,13 +721,14 @@ function topF() { document.body.scrollTop = 0; document.documentElement.scrollTo
 function sorT(type) {
     if (sortMode.includes("DN") || !sortMode.includes(type)) { type = type + "UP" }
     else { type = type + "DN" }
-    playSound(900); document.cookie = 'Sort=' + type + ';expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;'
+    playSound(900); document.cookie = 'Sort=' + type + cText
 }
 
 // make cookies
-function mC(y) {
+function mC(y, z) {
     if ((document.cookie.match('(^|;)\\s*' + y + '\\s*=\\s*([^;]+)')?.pop() || '') == 1) { playSound(500); document.cookie = y + '=0;expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;' }
-    else { playSound(900); document.cookie = y + '=1;expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;' }
+    else if (!z) { playSound(900); document.cookie = y + '=1' + cText }
+    else { playSound(900); document.cookie = y + '=' + cText }
 }
 
 // Longress by John Doherty
