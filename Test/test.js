@@ -142,7 +142,7 @@ async function fetchDD() {
             sortMode = element.split("=").pop()
         }
     });
-
+    
     //----sort Array----------------------------------------------------------------------
     //Uptime-add leading zero for sorting
     result.forEach(item => {
@@ -364,6 +364,7 @@ function changeCss() {
     }
     else if (document.cookie.includes("Background=0")) {
         container.style.backgroundImage = "none";
+        container.style.backgroundColor = "unset";
     }
     toScale("true");
 }
@@ -376,7 +377,9 @@ function toScale() {
     scaleItm = document.getElementById("sensorList");
     tileSize = document.getElementsByClassName('sAmmount')[1]
     tileAmmount = document.getElementsByClassName('sAmmount').length
-    if (isOpen) { colAmmount = Math.floor((document.body.clientWidth - framie.offsetWidth) / tileSize.offsetWidth) - 1 }
+    if (isOpen && getComputedStyle(document.getElementById('framie')).position != "absolute") { 
+        colAmmount = Math.floor((document.body.clientWidth - framie.offsetWidth) / tileSize.offsetWidth) - 1 
+    }
     else { colAmmount = Math.floor(document.body.clientWidth / (tileSize.offsetWidth)) - 1 }
     rowAmmount = Math.floor(tileAmmount / colAmmount)
     possibleRowAmmount = Math.floor(document.getElementById("container").offsetHeight / tileSize.getBoundingClientRect().height) - 1
@@ -387,7 +390,7 @@ function toScale() {
         }
     }
 
-    if (document.getElementById('framie').offsetWidth > 0 && window.innerWidth < 1500) {
+    if (document.getElementById('framie').offsetWidth > 0 && window.innerWidth < 1500 && getComputedStyle(document.getElementById('framie')).position != "absolute") {
         colAmmount = 2;
     };
 
@@ -522,7 +525,6 @@ function eventLS() {
         clearTimeout(bInput);
     });
     document.getElementById('cPicker').addEventListener("input", (e) => {
-        console.log(document.getElementById('cPicker').value)
         document.cookie = 'bgURL=' + document.getElementById('cPicker').value + cText
         document.getElementById("container").style.backgroundImage = "none";
         document.getElementById("container").style.backgroundColor = document.getElementById('cPicker').value

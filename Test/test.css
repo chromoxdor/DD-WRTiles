@@ -401,7 +401,7 @@ input::-webkit-inner-spin-button {
     }
 }
 
-@media screen and (max-width: 799px) {
+@media screen and (max-width: 950px) {
     #framie {
         position: absolute;
     }
