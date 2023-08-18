@@ -142,7 +142,7 @@ async function fetchDD() {
             sortMode = element.split("=").pop()
         }
     });
-    
+
     //----sort Array----------------------------------------------------------------------
     //Uptime-add leading zero for sorting
     result.forEach(item => {
@@ -605,7 +605,7 @@ function longPressB() {
 //    SOUND
 //##############################################################################################################
 function playSound(freQ) {
-    if ((!document.cookie.includes("Sound=0") || freQ < 1000) && (isittime || freQ != 3000)) {
+    if (!document.cookie.includes("Sound=0")) {
         c = new AudioContext()
         o = c.createOscillator()
         g = c.createGain()
