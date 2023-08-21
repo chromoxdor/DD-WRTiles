@@ -25,6 +25,7 @@ var sortMode;
 var newAmmount;
 var bgContent;
 var cText = ';expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;'
+var lTime = 0;
 
 //##############################################################################################################
 //      FETCH
@@ -36,7 +37,7 @@ async function fetchDD() {
     if (!document.cookie.includes("Offline=")) { mC("Offline") }
     if (!document.cookie.includes("Sound=")) { mC("Sound") }
     if (!document.cookie.includes("Background=")) { mC("Background") }
-    if (!document.cookie.includes("bgURL=")) { mC("bgURL",1) }
+    if (!document.cookie.includes("bgURL=")) { mC("bgURL", 1) }
     bgContent = document.cookie.slice(document.cookie.indexOf('bgURL=') + 6).split(";")[0]
     //-----DDTextToJSON-----------------------------------------------------------------
     const DDTextToJSON = (data, delimiter = ',') => {
@@ -133,6 +134,10 @@ async function fetchDD() {
         ...WiFiJSON.find(({ MAC }) => item.MAC == MAC),
         ...item,
     }));
+    /*result = WiFiJSON.map(item => ({
+        ...result.find(({ MAC }) => item.MAC == MAC),
+        ...item,
+    }));*/
 
     //-----get sort method-----------------------------------------------------------------
     if (!document.cookie.includes("Sort=")) { document.cookie = "Sort=NameUP;expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;'" };
@@ -145,18 +150,30 @@ async function fetchDD() {
 
     //----sort Array----------------------------------------------------------------------
     //Uptime-add leading zero for sorting
+
     result.forEach(item => {
         if (item[2]?.includes("d")) {
-            if (item[2].split("d")[1].split(":")[0].length == 2) {
-                item[2] = item[2].replace(" ", "0")
+            if (item[2].split("d")[1].split(":")[0].length == 3) {
+                item[2] = item[2].replace("  ", "0")
             }
-            else item[2] = item[2].replace(" ", "")
+            else item[2] = item[2].replace("  ", "")
         }
     })
 
+    if (sortMode.includes("Signal") || sortMode.includes("Uptime")) {
+        result1 = [
+            ...result.filter(x => x.Signal)];
+        result2 = [
+            ...result.filter(x => !x.Signal)];
+        result = result1.concat(result2);
+    }
+
     result.sort((a, b) => {
         if (sortMode.includes("Name")) {
-            return a.Name.toLowerCase() === b.Name.toLowerCase() ? 0 : a.Name.toLowerCase() > b.Name.toLowerCase() ? 1 : -1;
+            if (a.Name && b.Name) {
+                return a.Name.toLowerCase() === b.Name.toLowerCase() ? 0 : a.Name.toLowerCase() > b.Name.toLowerCase() ? 1 : -1;
+            }
+            else return -1
         }
         else if (sortMode.includes("Signal")) {
             if (a.Signal) {
@@ -168,12 +185,13 @@ async function fetchDD() {
             return (a.IP.split(".").pop()) - (b.IP.split(".").pop());
         }
         else if (sortMode.includes("Uptime")) {
-            if (a[2] && b[2]) {
-                return (a[2].replace(/d/g, '').split(":", 2).join(".")) - (b[2].replace(/d/g, '').split(":", 2).join("."));
+            if (a[2]) {
+                console.log(a.Name, ":", a[2]?.replace(/d/g, '').split(":", 2).join("."))
+                return (a[2]?.replace(/d/g, '').split(":", 2).join(".")) - (b[2]?.replace(/d/g, '').split(":", 2).join("."));
             }
             else return -1
         }
-    });
+    })
     //reverse results
     if (sortMode.includes("DN")) {
         result.reverse()
@@ -377,8 +395,8 @@ function toScale() {
     scaleItm = document.getElementById("sensorList");
     tileSize = document.getElementsByClassName('sAmmount')[1]
     tileAmmount = document.getElementsByClassName('sAmmount').length
-    if (isOpen && getComputedStyle(document.getElementById('framie')).position != "absolute") { 
-        colAmmount = Math.floor((document.body.clientWidth - framie.offsetWidth) / tileSize.offsetWidth) - 1 
+    if (isOpen && getComputedStyle(document.getElementById('framie')).position != "absolute") {
+        colAmmount = Math.floor((document.body.clientWidth - framie.offsetWidth) / tileSize.offsetWidth) - 1
     }
     else { colAmmount = Math.floor(document.body.clientWidth / (tileSize.offsetWidth)) - 1 }
     rowAmmount = Math.floor(tileAmmount / colAmmount)
