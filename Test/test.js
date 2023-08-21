@@ -55,7 +55,7 @@ async function fetchDD() {
     };
 
     //------LanArray----------------------------------------------------------------
-    if (nTH == 0) {
+   if (nTH == 0) {
         let response = await fetch('/Status_Lan.live.asp', {
             method: 'GET', credentials: 'include'
         });
@@ -99,11 +99,10 @@ async function fetchDD() {
     let arpJSON = DDTextToJSON(arpArray);
 
     //--------WiFiArray--------------------------------------------------------------
-    let response2 = await fetch('/Status_Wireless.live.asp', {
+   let response2 = await fetch('/Status_Wireless.live.asp', {
         method: 'GET', credentials: 'include'
     });
     WiFiText = await response2.text();
-
     let WiFiString = WiFiText.slice(WiFiText.indexOf('active_wireless::') + 17, -1);
 
     WiFiString = WiFiString.slice(0, WiFiString.indexOf('}'));
@@ -134,10 +133,10 @@ async function fetchDD() {
         ...WiFiJSON.find(({ MAC }) => item.MAC == MAC),
         ...item,
     }));
-    /*result = WiFiJSON.map(item => ({
+    result = WiFiJSON.map(item => ({
         ...result.find(({ MAC }) => item.MAC == MAC),
         ...item,
-    }));*/
+    }));
 
     //-----get sort method-----------------------------------------------------------------
     if (!document.cookie.includes("Sort=")) { document.cookie = "Sort=NameUP;expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;'" };
@@ -393,8 +392,10 @@ function toScale() {
     x = "auto ";
     m = null;
     scaleItm = document.getElementById("sensorList");
-    tileSize = document.getElementsByClassName('sAmmount')[1]
+    tileSize = document.getElementsByClassName('sAmmount')[0]
+    console.log(tileSize);
     tileAmmount = document.getElementsByClassName('sAmmount').length
+    if (tileAmmount > 1){
     if (isOpen && getComputedStyle(document.getElementById('framie')).position != "absolute") {
         colAmmount = Math.floor((document.body.clientWidth - framie.offsetWidth) / tileSize.offsetWidth) - 1
     }
@@ -439,6 +440,7 @@ function toScale() {
     if (!document.getElementsByClassName('extra').length) {
         document.getElementById('sensorList').innerHTML = html;
     }
+}
 }
 
 //##############################################################################################################
