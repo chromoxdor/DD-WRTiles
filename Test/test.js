@@ -133,10 +133,16 @@ async function fetchDD() {
         ...WiFiJSON.find(({ MAC }) => item.MAC == MAC),
         ...item,
     }));
+
+    resultLAN = [
+        ...result.filter(x => !x.Signal)];
+        console.log(resultLAN)
+
     result = WiFiJSON.map(item => ({
         ...result.find(({ MAC }) => item.MAC == MAC),
-        ...item,
+        ...item
     }));
+    result = result.concat(resultLAN);
 
     //-----get sort method-----------------------------------------------------------------
     if (!document.cookie.includes("Sort=")) { document.cookie = "Sort=NameUP;expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;'" };
@@ -185,7 +191,7 @@ async function fetchDD() {
         }
         else if (sortMode.includes("Uptime")) {
             if (a[2]) {
-                console.log(a.Name, ":", a[2]?.replace(/d/g, '').split(":", 2).join("."))
+                //console.log(a.Name, ":", a[2]?.replace(/d/g, '').split(":", 2).join("."))
                 return (a[2]?.replace(/d/g, '').split(":", 2).join(".")) - (b[2]?.replace(/d/g, '').split(":", 2).join("."));
             }
             else return -1
@@ -217,6 +223,7 @@ async function fetchDD() {
     html = ''
     result.forEach(item => {
         if (document.cookie.includes("Offline=1") || (document.cookie.includes("Offline=0") && item.Signal || item.arp1)) {
+            console.log(item.Name,item.Time)
             if (item.Time && item.Time != "Static") {
                 d = item.Time.split(" ")[0] + "d ";
                 r = item.Time.split(" ")[2];
@@ -225,6 +232,7 @@ async function fetchDD() {
                 r = r.join(":")
                 lTime = d + r;
             }
+            else (lTime = "N.A.")
             bS = '';
 
             if ((item.WiFi && item.Signal) || (!item.Signal && item.arp1)) { bS = "online"; }
@@ -393,7 +401,7 @@ function toScale() {
     m = null;
     scaleItm = document.getElementById("sensorList");
     tileSize = document.getElementsByClassName('sAmmount')[0]
-    console.log(tileSize);
+    //console.log(tileSize);
     tileAmmount = document.getElementsByClassName('sAmmount').length
     if (tileAmmount > 1){
     if (isOpen && getComputedStyle(document.getElementById('framie')).position != "absolute") {
