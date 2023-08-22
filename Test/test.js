@@ -72,14 +72,14 @@ async function fetchDD() {
     LanString = LanString.slice(0, LanString.indexOf('}'));
     LanString = LanString.replace(/\'/g, '');
 
+   
     LanString = "Name,IP,MAC,Time,x,IF,y," + LanString
     var LanArray = LanString.split(',')
-    let x = LanArray.length;
+    let x = LanArray.length + 7;
     for (i = 0; i < x; i++) {
         i = i + 7
         LanArray.splice(i, 0, ';');
     }
-
     LanArray = LanArray.toString();
     let LanJSON = DDTextToJSON(LanArray);
 
@@ -107,13 +107,14 @@ async function fetchDD() {
 
     WiFiString = WiFiString.slice(0, WiFiString.indexOf('}'));
 
-    var WiFiArray = WiFiString.split('\',\'')
 
-    let y = WiFiArray.length;
+    let WiFiArray = WiFiString.split('\',\'')
+    let y = WiFiArray.length + 17;
     for (i = 0; i < y; i++) {
         i = i + 17
         WiFiArray.splice(i, 0, ';');
     }
+
     WiFiArray = WiFiArray.toString();
     WiFiArray = WiFiArray.replace(/ day,/g, 'd').replace(/ days,/g, 'd');
 
@@ -134,15 +135,17 @@ async function fetchDD() {
         ...item,
     }));
 
+    //----everything without a signal must be a lan device--------------------------------------------------------------
     resultLAN = [
         ...result.filter(x => !x.Signal)];
-        console.log(resultLAN)
 
+    //----get the WiFi without an DHCP entry--------------------------------------------------------------
     result = WiFiJSON.map(item => ({
         ...result.find(({ MAC }) => item.MAC == MAC),
         ...item
     }));
-    result = result.concat(resultLAN);
+
+   result = result.concat(resultLAN);
 
     //-----get sort method-----------------------------------------------------------------
     if (!document.cookie.includes("Sort=")) { document.cookie = "Sort=NameUP;expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;'" };
@@ -218,12 +221,11 @@ async function fetchDD() {
             item[2] = item[2].replace("d0", "d")
         }
     })
-
+ 
     //----Make Tiles--------------------------------------------------------------
     html = ''
     result.forEach(item => {
-        if (document.cookie.includes("Offline=1") || (document.cookie.includes("Offline=0") && item.Signal || item.arp1)) {
-            console.log(item.Name,item.Time)
+        if (document.cookie.includes("Offline=1") || ((document.cookie.includes("Offline=0") && item.Signal) || item.arp1)) {
             if (item.Time && item.Time != "Static") {
                 d = item.Time.split(" ")[0] + "d ";
                 r = item.Time.split(" ")[2];
@@ -240,7 +242,7 @@ async function fetchDD() {
                 if (item2.IP == item.IP) {
                     if (!item.Signal && !item.arp1) { bS = ""; }
                     if (!item.Signal && item2.Status > 1 && item.arp1) { bS = "online"; }
-                    else if (!item.Signal && (item2.Status == 1 || item.arp1)) { bS = "response"; }
+                    else if (!item.Signal && (item2.Status == 1 || item.arp1)) { bS = "response";}
                     else if (item.Signal && item2.Status == 1) { bS = "response"; }
                 }
             })
@@ -401,7 +403,6 @@ function toScale() {
     m = null;
     scaleItm = document.getElementById("sensorList");
     tileSize = document.getElementsByClassName('sAmmount')[0]
-    //console.log(tileSize);
     tileAmmount = document.getElementsByClassName('sAmmount').length
     if (tileAmmount > 1){
     if (isOpen && getComputedStyle(document.getElementById('framie')).position != "absolute") {
@@ -411,10 +412,10 @@ function toScale() {
     rowAmmount = Math.floor(tileAmmount / colAmmount)
     possibleRowAmmount = Math.floor(document.getElementById("container").offsetHeight / tileSize.getBoundingClientRect().height) - 1
 
-    if (!isOpen && tileSize.getBoundingClientRect().height * rowAmmount < document.getElementById("container").offsetHeight && tileSize.offsetWidth * colAmmount > document.body.clientWidth || colAmmount > rowAmmount) {
-        if (possibleRowAmmount > Math.ceil(Math.sqrt(tileAmmount))) {
+    if (!isOpen && (tileSize.getBoundingClientRect().height * rowAmmount < document.getElementById("container").offsetHeight) && ((tileSize.offsetWidth * colAmmount > document.body.clientWidth) || colAmmount > rowAmmount)) {
+        //if (possibleRowAmmount > Math.ceil(Math.sqrt(tileAmmount))) {
             colAmmount = Math.ceil(Math.sqrt(tileAmmount))
-        }
+        //}
     }
 
     if (document.getElementById('framie').offsetWidth > 0 && window.innerWidth < 1500 && getComputedStyle(document.getElementById('framie')).position != "absolute") {
