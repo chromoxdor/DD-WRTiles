@@ -539,6 +539,11 @@ function eventLS() {
             clearTimeout(bInput);
             hideMenu();
         })
+        sonsorTile.addEventListener('touchstart', function (e) {
+            if (e.touches.length == 2) {
+                rightClick(e, sonsorTile)
+            }
+        });
     })
     document.getElementById('bgURL').addEventListener('click', (e) => {
         isittime = 0
