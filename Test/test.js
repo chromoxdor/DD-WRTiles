@@ -251,10 +251,6 @@ async function fetchDD() {
 
             html += '<div  class="sensors" id="' + item.IP + '" style="font-weight:bold;">' + item.Name + '</div>';
 
-            if (document.cookie.includes("Vendor=1")) {
-                html += '<div class=row><div class=odd>IP:</div><div class="even select" id="IP">' + item.IP + '</div></div>';
-            }
-
             if (document.cookie.includes("IP=1")) {
                 html += '<div class=row><div class=odd>IP:</div><div class="even select" id="IP">' + item.IP + '</div></div>';
             }
@@ -326,7 +322,7 @@ async function fetchDD() {
 //##############################################################################################################
 function makeMenu() {
     let sortArray = [{ "sort": ["NameUP", "NameDN"], "name": "Name" }, { "sort": ["SignalUP", "SignalDN"], "name": "Signal" }, { "sort": ["IPUP", "IPDN"], "name": "IP" }, { "sort": ["UptimeUP", "UptimeDN"], "name": "Uptime" }];
-    let showArray = ["Vendor","IP", "Adapter", "Lease", "Uptime", "MAC", "RX,TX", "Offline"]
+    let showArray = ["IP", "Adapter", "Lease", "Uptime", "MAC", "RX,TX", "Offline"]
     let settingsArray = ["Sound", "Background"]
     symUP = "&#9650;&#xFE0E";
     symDn = "&#9660;&#xFE0E";
