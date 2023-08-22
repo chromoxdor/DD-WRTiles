@@ -392,7 +392,7 @@ input::-webkit-inner-spin-button {
 }
 
 .context-menu {
-    background: #121212;
+    background: #cecece;
     height: 50px;
     width: 180px;
     overflow: hidden;
@@ -463,5 +463,11 @@ input::-webkit-inner-spin-button {
 
     .sensors {
         padding-bottom: 2%
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .context-menu {
+        background: #121212;
     }
 }

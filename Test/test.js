@@ -505,7 +505,7 @@ function addEonce() {
         toScale();
     })
     document.getElementById('contextMenu').addEventListener('mouseleave', (e) => {
-        hideMenu()
+        //hideMenu()
       });
 }
 
@@ -532,7 +532,7 @@ function eventLS() {
         sonsorTile.addEventListener('mouseleave', (e) => {
             isittime = 1
             clearTimeout(bInput);
-            hideMenu();
+            //hideMenu();
         })
     })
     document.getElementById('bgURL').addEventListener('click', (e) => {
