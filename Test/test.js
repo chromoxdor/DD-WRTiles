@@ -55,7 +55,7 @@ async function fetchDD() {
     };
 
     //------LanArray----------------------------------------------------------------
-   if (nTH == 0) {
+    if (nTH == 0) {
         let response = await fetch('/Status_Lan.live.asp', {
             method: 'GET', credentials: 'include'
         });
@@ -72,7 +72,7 @@ async function fetchDD() {
     LanString = LanString.slice(0, LanString.indexOf('}'));
     LanString = LanString.replace(/\'/g, '');
 
-   
+
     LanString = "Name,IP,MAC,Time,x,IF,y," + LanString
     var LanArray = LanString.split(',')
     let x = LanArray.length + 7;
@@ -99,7 +99,7 @@ async function fetchDD() {
     let arpJSON = DDTextToJSON(arpArray);
 
     //--------WiFiArray--------------------------------------------------------------
-   let response2 = await fetch('/Status_Wireless.live.asp', {
+    let response2 = await fetch('/Status_Wireless.live.asp', {
         method: 'GET', credentials: 'include'
     });
     WiFiText = await response2.text();
@@ -144,7 +144,7 @@ async function fetchDD() {
         ...item
     }));
 
-   result = result.concat(resultLAN);
+    result = result.concat(resultLAN);
 
     //-----get sort method-----------------------------------------------------------------
     if (!document.cookie.includes("Sort=")) { document.cookie = "Sort=NameUP;expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;'" };
@@ -189,7 +189,15 @@ async function fetchDD() {
             else return -1
         }
         else if (sortMode.includes("IP")) {
-            return (a.IP.split(".").pop()) - (b.IP.split(".").pop());
+            if (a.IP == undefined) {
+                a.IP = ""
+            }
+            if (b.IP == undefined) {
+                b.IP = ""
+            }
+            return (a.IP?.split(".").pop()) - (b.IP?.split(".").pop());
+
+
         }
         else if (sortMode.includes("Uptime")) {
             if (a[2]) {
@@ -220,7 +228,7 @@ async function fetchDD() {
             item[2] = item[2].replace("d0", "d")
         }
     })
- 
+
     //----Make Tiles--------------------------------------------------------------
     html = ''
     result.forEach(item => {
@@ -241,7 +249,7 @@ async function fetchDD() {
                 if (item2.IP == item.IP) {
                     if (!item.Signal && !item.arp1) { bS = ""; }
                     if (!item.Signal && item2.Status > 1 && item.arp1) { bS = "online"; }
-                    else if (!item.Signal && (item2.Status == 1 || item.arp1)) { bS = "response";}
+                    else if (!item.Signal && (item2.Status == 1 || item.arp1)) { bS = "response"; }
                     else if (item.Signal && item2.Status == 1) { bS = "response"; }
                 }
             })
@@ -276,8 +284,9 @@ async function fetchDD() {
                 //html += '<div class=row style="align-self:center"><div class=even>' + item.MAC + '</div></div>';
                 html += '<div class=row style="align-self:center;"><div class="even select" id="MAC">' + item.MAC + '</div></div>';
             }
-            else {html += '<div class=row style="align-self:center;display:none"><div class="even select" id="MAC">' + item.MAC + '</div></div>';
-        }
+            else {
+                html += '<div class=row style="align-self:center;display:none"><div class="even select" id="MAC">' + item.MAC + '</div></div>';
+            }
 
             if (item.Signal) {
                 if (document.cookie.includes("RX,TX=1")) {
@@ -406,52 +415,52 @@ function toScale() {
     scaleItm = document.getElementById("sensorList");
     tileSize = document.getElementsByClassName('sAmmount')[0]
     tileAmmount = document.getElementsByClassName('sAmmount').length
-    if (tileAmmount > 1){
-    if (isOpen && getComputedStyle(document.getElementById('framie')).position != "absolute") {
-        colAmmount = Math.floor((document.body.clientWidth - framie.offsetWidth) / tileSize.offsetWidth) - 1
-    }
-    else { colAmmount = Math.floor(document.body.clientWidth / (tileSize.offsetWidth)) - 1 }
-    rowAmmount = Math.floor(tileAmmount / colAmmount)
-    possibleRowAmmount = Math.floor(document.getElementById("container").offsetHeight / tileSize.getBoundingClientRect().height) - 1
+    if (tileAmmount > 1) {
+        if (isOpen && getComputedStyle(document.getElementById('framie')).position != "absolute") {
+            colAmmount = Math.floor((document.body.clientWidth - framie.offsetWidth) / tileSize.offsetWidth) - 1
+        }
+        else { colAmmount = Math.floor(document.body.clientWidth / (tileSize.offsetWidth)) - 1 }
+        rowAmmount = Math.floor(tileAmmount / colAmmount)
+        possibleRowAmmount = Math.floor(document.getElementById("container").offsetHeight / tileSize.getBoundingClientRect().height) - 1
 
-    if (!isOpen && (tileSize.getBoundingClientRect().height * rowAmmount < document.getElementById("container").offsetHeight) && ((tileSize.offsetWidth * colAmmount > document.body.clientWidth) || colAmmount > rowAmmount)) {
-        //if (possibleRowAmmount > Math.ceil(Math.sqrt(tileAmmount))) {
+        if (!isOpen && (tileSize.getBoundingClientRect().height * rowAmmount < document.getElementById("container").offsetHeight) && ((tileSize.offsetWidth * colAmmount > document.body.clientWidth) || colAmmount > rowAmmount)) {
+            //if (possibleRowAmmount > Math.ceil(Math.sqrt(tileAmmount))) {
             colAmmount = Math.ceil(Math.sqrt(tileAmmount))
-        //}
-    }
+            //}
+        }
 
-    if (document.getElementById('framie').offsetWidth > 0 && window.innerWidth < 1500 && getComputedStyle(document.getElementById('framie')).position != "absolute") {
-        colAmmount = 2;
-    };
+        if (document.getElementById('framie').offsetWidth > 0 && window.innerWidth < 1500 && getComputedStyle(document.getElementById('framie')).position != "absolute") {
+            colAmmount = 2;
+        };
 
-    if (colAmmount < 2 || document.cookie.includes("Two=1")) { colAmmount = 2; }
-    for (let i = 0; i < colAmmount; i++) {
-        y = y + x
-    }
+        if (colAmmount < 2 || document.cookie.includes("Two=1")) { colAmmount = 2; }
+        for (let i = 0; i < colAmmount; i++) {
+            y = y + x
+        }
 
-    scaleItm.style.setProperty('grid-template-columns', y, m);
+        scaleItm.style.setProperty('grid-template-columns', y, m);
 
-    if ((document.body.clientWidth - 20) < scaleItm.offsetWidth && colAmmount == 2) {
-        scaleItm.style.transform = 'scale(' + (document.body.clientWidth - 20) / scaleItm.offsetWidth + ')';
-        xTrans = (scaleItm.offsetWidth + 10 - (scaleItm.offsetWidth * (document.body.clientWidth - 20) / scaleItm.offsetWidth)) / 2
-        scaleItm.style.translate = -xTrans + "px " + -(scaleItm.offsetHeight - ((document.body.clientWidth / scaleItm.offsetWidth) * scaleItm.offsetHeight)) / 2 + "px";
-    }
-    else {
-        scaleItm.style.transform = 'scale(1)';
-        document.getElementById('sensorList').style.translate = "0";
-    }
-    //calculate extra "filling"-tiles
-    if (tileAmmount % colAmmount != 0 && isittime) {
-        calcTile = colAmmount - (tileAmmount - colAmmount * Math.floor(tileAmmount / colAmmount));
-        newAmmount = calcTile
-        for (let i = 1; i <= calcTile; i++) {
-            html += '<div class="sensorset extra"></div>'
+        if ((document.body.clientWidth - 20) < scaleItm.offsetWidth && colAmmount == 2) {
+            scaleItm.style.transform = 'scale(' + (document.body.clientWidth - 20) / scaleItm.offsetWidth + ')';
+            xTrans = (scaleItm.offsetWidth + 10 - (scaleItm.offsetWidth * (document.body.clientWidth - 20) / scaleItm.offsetWidth)) / 2
+            scaleItm.style.translate = -xTrans + "px " + -(scaleItm.offsetHeight - ((document.body.clientWidth / scaleItm.offsetWidth) * scaleItm.offsetHeight)) / 2 + "px";
+        }
+        else {
+            scaleItm.style.transform = 'scale(1)';
+            document.getElementById('sensorList').style.translate = "0";
+        }
+        //calculate extra "filling"-tiles
+        if (tileAmmount % colAmmount != 0 && isittime) {
+            calcTile = colAmmount - (tileAmmount - colAmmount * Math.floor(tileAmmount / colAmmount));
+            newAmmount = calcTile
+            for (let i = 1; i <= calcTile; i++) {
+                html += '<div class="sensorset extra"></div>'
+            }
+        }
+        if (!document.getElementsByClassName('extra').length) {
+            document.getElementById('sensorList').innerHTML = html;
         }
     }
-    if (!document.getElementsByClassName('extra').length) {
-        document.getElementById('sensorList').innerHTML = html;
-    }
-}
 }
 
 //##############################################################################################################
@@ -501,8 +510,8 @@ function addEonce() {
         toScale();
     })
     document.getElementById('contextMenu').addEventListener('mouseleave', (e) => {
-        //hideMenu()
-      });
+        hideMenu()
+    });
 }
 
 //##############################################################################################################
@@ -528,7 +537,7 @@ function eventLS() {
         sonsorTile.addEventListener('mouseleave', (e) => {
             isittime = 1
             clearTimeout(bInput);
-            //hideMenu();
+            hideMenu();
         })
     })
     document.getElementById('bgURL').addEventListener('click', (e) => {
@@ -714,29 +723,29 @@ async function checkURL() {
 //##############################################################################################################
 //     GET VENDOR
 //##############################################################################################################
-  document.onclick = hideMenu;
-  
-  function conText(){
+document.onclick = hideMenu;
+
+function conText() {
     const sensorSets = document.querySelectorAll('.sAmmount');
     sensorSets.forEach(sensorSet => {
-        sensorSet.addEventListener("contextmenu", (e) => { rightClick(e,sensorSet) });
+        sensorSet.addEventListener("contextmenu", (e) => { rightClick(e, sensorSet) });
     });
-  }
-  
-  function hideMenu() {
+}
+
+function hideMenu() {
     document.getElementById("contextMenu").style.opacity = "0"
     document.getElementById("contextMenu").style.pointerEvents = 'none'
-  }
-  
-  async function rightClick(e,sensorSet) {
+}
+
+async function rightClick(e, sensorSet) {
     e.preventDefault();
     isittime = 0;
     clearTimeout(bInput);
     bInput = setTimeout(blurInput, 10000)
     copyE = sensorSet
     sMAC = copyE.querySelector("#MAC");
-    document.getElementById('vendor').innerHTML = '<iframe src="https://api.macvendors.com/'+sMAC.textContent+'"></iframe>'
-  
+    document.getElementById('vendor').innerHTML = '<iframe src="https://api.macvendors.com/' + sMAC.textContent + '"></iframe>'
+
     var menu = document.getElementById("contextMenu")
     if (document.getElementById("contextMenu").style.display == "none") {
         menu.style.display = 'flex';
@@ -744,8 +753,8 @@ async function checkURL() {
     }
     menu.style.pointerEvents = 'all'
     menu.style.opacity = '1';
-    menu.style.left = e.pageX+5 + "px";
-    menu.style.top = e.pageY+5 + "px";
+    menu.style.left = e.pageX + 5 + "px";
+    menu.style.top = e.pageY + 5 + "px";
 }
 //##############################################################################################################
 //     HELPER
