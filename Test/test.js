@@ -109,7 +109,7 @@ async function fetchDD() {
 
 
     let WiFiArray = WiFiString.split('\',\'')
-    let y = WiFiArray.length + 17;
+    let y = WiFiArray.length;
     for (i = 0; i < y; i++) {
         i = i + 17
         WiFiArray.splice(i, 0, ';');
@@ -122,7 +122,6 @@ async function fetchDD() {
     WiFiArray = "MAC,1,WiFi,2,RX,TX,Mode,3,4,5,Signal,6,7,8,9,10,11,;," + WiFiArray
 
     let WiFiJSON = DDTextToJSON(WiFiArray);
-
     //----combine LanArray & ARPArray--------------------------------------------------------------
     result = LanJSON.map(item => ({
         ...arpJSON.find(({ MAC }) => item.MAC == MAC),
@@ -252,6 +251,10 @@ async function fetchDD() {
 
             html += '<div  class="sensors" id="' + item.IP + '" style="font-weight:bold;">' + item.Name + '</div>';
 
+            if (document.cookie.includes("Vendor=1")) {
+                html += '<div class=row><div class=odd>IP:</div><div class="even select" id="IP">' + item.IP + '</div></div>';
+            }
+
             if (document.cookie.includes("IP=1")) {
                 html += '<div class=row><div class=odd>IP:</div><div class="even select" id="IP">' + item.IP + '</div></div>';
             }
@@ -275,8 +278,10 @@ async function fetchDD() {
 
             if (document.cookie.includes("MAC=1")) {
                 //html += '<div class=row style="align-self:center"><div class=even>' + item.MAC + '</div></div>';
-                html += '<div class=row style="align-self:center"><div class="even select" id="MAC">' + item.MAC + '</div></div>';
+                html += '<div class=row style="align-self:center;"><div class="even select" id="MAC">' + item.MAC + '</div></div>';
             }
+            else {html += '<div class=row style="align-self:center;display:none"><div class="even select" id="MAC">' + item.MAC + '</div></div>';
+        }
 
             if (item.Signal) {
                 if (document.cookie.includes("RX,TX=1")) {
@@ -312,6 +317,7 @@ async function fetchDD() {
         changeCss();
         longPressB();
         eventLS();
+        conText()
     }
 }
 
@@ -320,7 +326,7 @@ async function fetchDD() {
 //##############################################################################################################
 function makeMenu() {
     let sortArray = [{ "sort": ["NameUP", "NameDN"], "name": "Name" }, { "sort": ["SignalUP", "SignalDN"], "name": "Signal" }, { "sort": ["IPUP", "IPDN"], "name": "IP" }, { "sort": ["UptimeUP", "UptimeDN"], "name": "Uptime" }];
-    let showArray = ["IP", "Adapter", "Lease", "Uptime", "MAC", "RX,TX", "Offline"]
+    let showArray = ["Vendor","IP", "Adapter", "Lease", "Uptime", "MAC", "RX,TX", "Offline"]
     let settingsArray = ["Sound", "Background"]
     symUP = "&#9650;&#xFE0E";
     symDn = "&#9660;&#xFE0E";
@@ -498,6 +504,9 @@ function addEonce() {
         bInput = setTimeout(blurInput, 1000)
         toScale();
     })
+    document.getElementById('contextMenu').addEventListener('mouseleave', (e) => {
+        hideMenu()
+      });
 }
 
 //##############################################################################################################
@@ -516,6 +525,14 @@ function eventLS() {
             isittime = 1
             clearTimeout(bInput);
             e.stopPropagation();
+        })
+    })
+    const sonsorTiles = document.querySelectorAll(".sAmmount");
+    sonsorTiles.forEach(sonsorTile => {
+        sonsorTile.addEventListener('mouseleave', (e) => {
+            isittime = 1
+            clearTimeout(bInput);
+            hideMenu();
         })
     })
     document.getElementById('bgURL').addEventListener('click', (e) => {
@@ -698,12 +715,48 @@ async function checkURL() {
     }
     cURL = setTimeout(checkURL, 5000);
 }
-
+//##############################################################################################################
+//     GET VENDOR
+//##############################################################################################################
+  document.onclick = hideMenu;
+  
+  function conText(){
+    const sensorSets = document.querySelectorAll('.sAmmount');
+    sensorSets.forEach(sensorSet => {
+        sensorSet.addEventListener("contextmenu", (e) => { rightClick(e,sensorSet) });
+    });
+  }
+  
+  function hideMenu() {
+    document.getElementById("contextMenu").style.opacity = "0"
+    document.getElementById("contextMenu").style.pointerEvents = 'none'
+  }
+  
+  async function rightClick(e,sensorSet) {
+    e.preventDefault();
+    isittime = 0;
+    clearTimeout(bInput);
+    bInput = setTimeout(blurInput, 10000)
+    copyE = sensorSet
+    sMAC = copyE.querySelector("#MAC");
+    document.getElementById('vendor').innerHTML = '<iframe src="https://api.macvendors.com/'+sMAC.textContent+'"></iframe>'
+  
+    var menu = document.getElementById("contextMenu")
+    if (document.getElementById("contextMenu").style.display == "none") {
+        menu.style.display = 'flex';
+        menu.style.opacity = '1';
+    }
+    menu.style.pointerEvents = 'all'
+    menu.style.opacity = '1';
+    menu.style.left = e.pageX+5 + "px";
+    menu.style.top = e.pageY+5 + "px";
+}
 //##############################################################################################################
 //     HELPER
 //##############################################################################################################
 function blurInput() {
     isittime = 1;
+    hideMenu();
 }
 
 function openNav(whatisit) {
