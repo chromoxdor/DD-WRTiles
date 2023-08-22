@@ -544,6 +544,13 @@ function eventLS() {
                 rightClick(e, sonsorTile)
             }
         });
+        sonsorTile.addEventListener('touchstart', function (e) {
+            if (e.touches.length == 1) {
+                isittime = 1
+            clearTimeout(bInput);
+            hideMenu();
+            }
+        });
     })
     document.getElementById('bgURL').addEventListener('click', (e) => {
         isittime = 0
@@ -749,7 +756,9 @@ async function rightClick(e, sensorSet) {
     bInput = setTimeout(blurInput, 10000)
     copyE = sensorSet
     sMAC = copyE.querySelector("#MAC");
-    document.getElementById('vendor').innerHTML = '<iframe src="https://api.macvendors.com/' + sMAC.textContent + '"></iframe>'
+    sMAC1 = sMAC.textContent.split(":").slice(0,3),
+    sMAC1 = sMAC1.join(":") + ":00:00:00";
+    document.getElementById('vendor').innerHTML = '<iframe id="IFR" src="https://api.macvendors.com/' + sMAC1 + '"></iframe>'
 
     var menu = document.getElementById("contextMenu")
     if (document.getElementById("contextMenu").style.display == "none") {
@@ -758,8 +767,13 @@ async function rightClick(e, sensorSet) {
     }
     menu.style.pointerEvents = 'all'
     menu.style.opacity = '1';
-    menu.style.left = e.pageX + 5 + "px";
-    menu.style.top = e.pageY + 5 + "px";
+    menu.style.left = e.pageX - 90 + "px";
+    menu.style.top = e.pageY + 10 + "px";
+    setTimeout(checkIFR,500)
+}
+
+function checkIFR(){
+    console.log(document.getElementById('IFR').contentWindow.document.body)   
 }
 //##############################################################################################################
 //     HELPER
