@@ -113,7 +113,7 @@ body {
 .signal {
     height: 20px;
     border-radius: 5px;
-    margin-top: 1px;
+    margin-top: 3px;
     position: relative;
     overflow: hidden;
     box-shadow: 1px 5px 5px -5px #333 inset;
