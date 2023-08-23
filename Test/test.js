@@ -292,10 +292,11 @@ async function fetchDD() {
                 if (document.cookie.includes("RX,TX=1")) {
                     html += '<div class=row><div class=odd>TX:' + item.TX + '</div><div class=even>RX:' + item.RX + '</div></div>';
                 }
-                html += '<div class=signal><meter value="' + item.Signal / 10 + '" min=0" max="100" id="' + item.Name + '" class="slider" ></meter><div class=sQ>' + item.Signal / 10 + '%</div></div>';
+                //html += '<div class=signal><meter value="' + item.Signal / 10 + '" min=0" max="100" id="' + item.Name + '" class="slider" ></meter><div class=sQ>' + item.Signal / 10 + '%</div></div>';
+                html += '<div class="signal"><div class="slider" style="width: ' + item.Signal / 10 + '%;"></div><div class="sQ">' + item.Signal / 10 + '%</div></div>'
             }
 
-            else { html += '<div class=signal></div>'; }
+            else { html += '<div class=signal style="opacity: 0;"></div>'; }
 
             html += '</div>';
         }
@@ -423,7 +424,7 @@ function toScale() {
         rowAmmount = Math.floor(tileAmmount / colAmmount)
         possibleRowAmmount = Math.floor(document.getElementById("container").offsetHeight / tileSize.getBoundingClientRect().height) - 1
 
-        if (!isOpen && (tileSize.getBoundingClientRect().height * rowAmmount < document.getElementById("container").offsetHeight) && ((tileSize.offsetWidth * colAmmount > document.body.clientWidth) || colAmmount > rowAmmount)) {
+        if ((tileSize.getBoundingClientRect().height * rowAmmount < document.getElementById("container").offsetHeight) && ((tileSize.offsetWidth * colAmmount > document.body.clientWidth) || colAmmount > rowAmmount)) {
             //if (possibleRowAmmount > Math.ceil(Math.sqrt(tileAmmount))) {
             colAmmount = Math.ceil(Math.sqrt(tileAmmount))
             //}
@@ -509,8 +510,10 @@ function addEonce() {
         bInput = setTimeout(blurInput, 1000)
         toScale();
     })
-    document.getElementById('contextMenu').addEventListener('mouseleave', (e) => {
-        hideMenu()
+    document.getElementById('container').addEventListener('click', (e) => {
+        if (e.target == document.getElementById('allList') || e.target == document.getElementById('container')) {
+            iFrClose();
+        }
     });
 }
 
@@ -538,7 +541,7 @@ function eventLS() {
             isittime = 1
             clearTimeout(bInput);
             hideMenu();
-        })
+        });
         sonsorTile.addEventListener('touchstart', function (e) {
             if (e.touches.length == 2) {
                 rightClick(e, sonsorTile)
@@ -547,8 +550,8 @@ function eventLS() {
         sonsorTile.addEventListener('touchstart', function (e) {
             if (e.touches.length == 1) {
                 isittime = 1
-            clearTimeout(bInput);
-            hideMenu();
+                clearTimeout(bInput);
+                hideMenu();
             }
         });
     })
@@ -735,7 +738,6 @@ async function checkURL() {
 //##############################################################################################################
 //     GET VENDOR
 //##############################################################################################################
-document.onclick = hideMenu;
 
 function conText() {
     const sensorSets = document.querySelectorAll('.sAmmount');
@@ -756,8 +758,8 @@ async function rightClick(e, sensorSet) {
     bInput = setTimeout(blurInput, 10000)
     copyE = sensorSet
     sMAC = copyE.querySelector("#MAC");
-    sMAC1 = sMAC.textContent.split(":").slice(0,3),
-    sMAC1 = sMAC1.join(":") + ":00:00:00";
+    sMAC1 = sMAC.textContent.split(":").slice(0, 3),
+        sMAC1 = sMAC1.join(":") + ":00:00:00";
     document.getElementById('vendor').innerHTML = '<iframe id="IFR" src="https://api.macvendors.com/' + sMAC1 + '"></iframe>'
 
     var menu = document.getElementById("contextMenu")
@@ -769,12 +771,8 @@ async function rightClick(e, sensorSet) {
     menu.style.opacity = '1';
     menu.style.left = e.pageX - 90 + "px";
     menu.style.top = e.pageY + 10 + "px";
-    setTimeout(checkIFR,500)
 }
 
-function checkIFR(){
-    console.log(document.getElementById('IFR').contentWindow.document.body)   
-}
 //##############################################################################################################
 //     HELPER
 //##############################################################################################################
