@@ -119,7 +119,7 @@ async function fetchDD() {
     WiFiArray = WiFiArray.replace(/ day,/g, 'd').replace(/ days,/g, 'd');
 
     WiFiArray = WiFiArray.slice(1, -1)
-    WiFiArray = "MAC,1,WiFi,2,RX,TX,Mode,3,4,5,Signal,6,7,8,9,10,11,;," + WiFiArray
+    WiFiArray = "MAC,1,WiFi,Uptime,RX,TX,Mode,3,4,5,Signal,6,7,8,9,10,11,;," + WiFiArray
 
     let WiFiJSON = DDTextToJSON(WiFiArray);
     //----combine LanArray & ARPArray--------------------------------------------------------------
@@ -156,14 +156,24 @@ async function fetchDD() {
     });
 
     //----sort Array----------------------------------------------------------------------
-    //Uptime-add leading zero for sorting
-
+    // add keys where they are missing and give undefined keys a value
     result.forEach(item => {
-        if (item[2]?.includes("d")) {
-            if (item[2].split("d")[1].split(":")[0].length == 3) {
-                item[2] = item[2].replace("  ", "0")
+        for (const key in item) {
+            if (item[key] == undefined || item[key] == "") {
+                item[key] = "N.A."
             }
-            else item[2] = item[2].replace("  ", "")
+        }
+        if (!item.hasOwnProperty('Name')) { item.Name = "N.A." }
+        if (!item.hasOwnProperty('IP')) { item.IP = "N.A." }
+    })
+
+    //Uptime - add leading zero for sorting
+    result.forEach(item => {
+        if (item.Uptime?.includes("d")) {
+            if (item.Uptime.split("d")[1].split(":")[0].length == 3) {
+                item.Uptime = item.Uptime.replace("  ", "0")
+            }
+            else item.Uptime = item.Uptime.replace("  ", "")
         }
     })
 
@@ -177,10 +187,7 @@ async function fetchDD() {
 
     result.sort((a, b) => {
         if (sortMode.includes("Name")) {
-            if (a.Name && b.Name) {
                 return a.Name.toLowerCase() === b.Name.toLowerCase() ? 0 : a.Name.toLowerCase() > b.Name.toLowerCase() ? 1 : -1;
-            }
-            else return -1
         }
         else if (sortMode.includes("Signal")) {
             if (a.Signal) {
@@ -189,20 +196,11 @@ async function fetchDD() {
             else return -1
         }
         else if (sortMode.includes("IP")) {
-            if (a.IP == undefined) {
-                a.IP = ""
-            }
-            if (b.IP == undefined) {
-                b.IP = ""
-            }
             return (a.IP?.split(".").pop()) - (b.IP?.split(".").pop());
-
-
         }
         else if (sortMode.includes("Uptime")) {
-            if (a[2]) {
-                //console.log(a.Name, ":", a[2]?.replace(/d/g, '').split(":", 2).join("."))
-                return (a[2]?.replace(/d/g, '').split(":", 2).join(".")) - (b[2]?.replace(/d/g, '').split(":", 2).join("."));
+            if (a.Uptime) {
+                return (a.Uptime?.replace(/d/g, '').split(":", 2).join(".")) - (b.Uptime?.replace(/d/g, '').split(":", 2).join("."));
             }
             else return -1
         }
@@ -224,8 +222,8 @@ async function fetchDD() {
     }
     //Uptime-remove leading zero of ours again
     result.forEach(item => {
-        if (item[2]?.includes("d0")) {
-            item[2] = item[2].replace("d0", "d")
+        if (item.Uptime?.includes("d0")) {
+            item.Uptime = item.Uptime.replace("d0", "d")
         }
     })
 
@@ -242,15 +240,15 @@ async function fetchDD() {
                 lTime = d + r;
             }
             else (lTime = "N.A.")
-            bS = '';
+            bS = "";
 
             if ((item.WiFi && item.Signal) || (!item.Signal && item.arp1)) { bS = "online"; }
             dataT2.forEach(item2 => {
-                if (item2.IP == item.IP) {
+                if (item2.MAC == item.MAC) {
                     if (!item.Signal && !item.arp1) { bS = ""; }
-                    if (!item.Signal && item2.Status > 1 && item.arp1) { bS = "online"; }
+                    else if (!item.Signal && item2.Status > 1 && item.arp1) { bS = "online"; }
                     else if (!item.Signal && (item2.Status == 1 || item.arp1)) { bS = "response"; }
-                    else if (item.Signal && item2.Status == 1) { bS = "response"; }
+                    if (item.Signal && item2.Status == 1) { bS = "response"; }
                 }
             })
             html += '<div class=" sensorset sAmmount ' + bS;
@@ -276,7 +274,7 @@ async function fetchDD() {
             }
 
             if (document.cookie.includes("Uptime=1")) {
-                if (item[2]) { uT = item[2].split(":", 2).join("h") + "m"; html += '<div class=row><div class=odd>Up:</div><div class=even>' + uT + '</div></div>'; }
+                if (item.Uptime) { uT = item.Uptime.split(":", 2).join("h") + "m"; html += '<div class=row><div class=odd>Up:</div><div class=even>' + uT + '</div></div>'; }
                 else { html += '<div class=row><div class=odd>Up:</div><div class=even>N.A.</div></div>'; }
             }
 
@@ -702,7 +700,7 @@ async function checkURL() {
         let controller = new AbortController();
         setTimeout(() => controller.abort(), 1000);
 
-        if (dataT2.find(o => o.IP === Array.IP)) {
+        if (dataT2.find(o => o.MAC === Array.MAC)) {
             let obj = dataT2.find((o, i) => {
                 dataT2index = i
                 found = Array.IP
@@ -727,9 +725,9 @@ async function checkURL() {
         }
         if (Array.IP) {
             if (found) {
-                dataT2[dataT2index] = { "IP": found, "Status": status };
+                dataT2[dataT2index] = { "IP": found, "Status": status, "MAC": Array.MAC };
             }
-            else { dataT2.push({ "IP": Array.IP, "Status": status }); }
+            else { dataT2.push({ "IP": Array.IP, "Status": status, "MAC": Array.MAC }); }
         }
 
     }
