@@ -187,7 +187,7 @@ async function fetchDD() {
 
     result.sort((a, b) => {
         if (sortMode.includes("Name")) {
-                return a.Name.toLowerCase() === b.Name.toLowerCase() ? 0 : a.Name.toLowerCase() > b.Name.toLowerCase() ? 1 : -1;
+            return a.Name.toLowerCase() === b.Name.toLowerCase() ? 0 : a.Name.toLowerCase() > b.Name.toLowerCase() ? 1 : -1;
         }
         else if (sortMode.includes("Signal")) {
             if (a.Signal) {
@@ -274,7 +274,14 @@ async function fetchDD() {
             }
 
             if (document.cookie.includes("Uptime=1")) {
-                if (item.Uptime) { uT = item.Uptime.split(":", 2).join("h") + "m"; html += '<div class=row><div class=odd>Up:</div><div class=even>' + uT + '</div></div>'; }
+                if (item.Uptime) {
+                    if (item.Uptime.split(":")[0] == 0) {
+                        uT = item.Uptime.split(":", 2)[1] + " minutes"
+                    }
+                    else { uT = item.Uptime.split(":", 2).join("h") + "m"; }
+
+                    html += '<div class=row><div class=odd>Up:</div><div class=even>' + uT + '</div></div>';
+                }
                 else { html += '<div class=row><div class=odd>Up:</div><div class=even>N.A.</div></div>'; }
             }
 
@@ -756,10 +763,9 @@ async function rightClick(e, sensorSet) {
     bInput = setTimeout(blurInput, 10000)
     copyE = sensorSet
     sMAC = copyE.querySelector("#MAC");
-    sMAC1 = sMAC.textContent.split(":").slice(0, 3),
-        sMAC1 = sMAC1.join(":") + ":00:00:00";
+    sMAC1 = sMAC.textContent.split(":").slice(0, 3);
+    sMAC1 = sMAC1.join(":") + ":00:00:00";
     document.getElementById('vendor').innerHTML = '<iframe id="IFR" src="https://api.macvendors.com/' + sMAC1 + '"></iframe>'
-
     var menu = document.getElementById("contextMenu")
     if (document.getElementById("contextMenu").style.display == "none") {
         menu.style.display = 'flex';
