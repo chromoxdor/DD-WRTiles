@@ -9,4 +9,4 @@ If you like my work consider a donation: [![donate](https://img.shields.io/badge
 ![dd](https://github.com/chromoxdor/DD-WRTiles/assets/33860956/f8fb4ffe-96da-4ef6-b63f-4c1e3679355b)
 
 
-<img width="300" alt="overview" src="https://github.com/chromoxdor/DD-WRTiles/assets/33860956/7e0402d4-dfd0-4d4f-a609-dee967230e64">
+<img width="422" alt="Bildschirmfoto 2023-09-24 um 11 14 53" src="https://github.com/chromoxdor/DD-WRTiles/assets/33860956/6ecabc36-4c69-42af-82f5-2e9d6f09eef9">
