@@ -239,7 +239,8 @@ async function fetchDD() {
                 r = r.join(":")
                 lTime = d + r;
             }
-            else (lTime = "N.A.")
+            else if (!item.Time) lTime = "N.A."
+            else (lTime = item.Time)
             bS = "";
 
             if ((item.WiFi && item.Signal) || (!item.Signal && item.arp1)) { bS = "online"; }
