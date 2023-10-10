@@ -220,7 +220,7 @@ async function fetchDD() {
         });
         result = result1.concat(result2);
     }
-    //Uptime-remove leading zero of ours again
+    //Uptime-remove leading zero of hours again
     result.forEach(item => {
         if (item.Uptime?.includes("d0")) {
             item.Uptime = item.Uptime.replace("d0", "d")
@@ -230,8 +230,9 @@ async function fetchDD() {
     //----Make Tiles--------------------------------------------------------------
     html = ''
     result.forEach(item => {
+        console.log(item.Name, item.Time)
         if (document.cookie.includes("Offline=1") || ((document.cookie.includes("Offline=0") && item.Signal) || item.arp1)) {
-            if (item.Time && item.Time != "Static") {
+            if (item.Time?.includes("days")) {
                 d = item.Time.split(" ")[0] + "d ";
                 r = item.Time.split(" ")[2];
                 r = r.split(":")
@@ -277,7 +278,7 @@ async function fetchDD() {
             if (document.cookie.includes("Uptime=1")) {
                 if (item.Uptime) {
                     if (item.Uptime.split(":")[0] == 0) {
-                        uT = item.Uptime.split(":", 2)[1] + " minutes"
+                        uT = parseInt(item.Uptime.split(":", 2)[1]) + " minutes"
                     }
                     else { uT = item.Uptime.split(":", 2).join("h") + "m"; }
 
