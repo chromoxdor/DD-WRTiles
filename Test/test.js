@@ -230,7 +230,6 @@ async function fetchDD() {
     //----Make Tiles--------------------------------------------------------------
     html = ''
     result.forEach(item => {
-        console.log(item.Name, item.Time)
         if (document.cookie.includes("Offline=1") || ((document.cookie.includes("Offline=0") && item.Signal) || item.arp1)) {
             if (item.Time?.includes("days")) {
                 d = item.Time.split(" ")[0] + "d ";
@@ -302,8 +301,12 @@ async function fetchDD() {
                 //html += '<div class=signal><meter value="' + item.Signal / 10 + '" min=0" max="100" id="' + item.Name + '" class="slider" ></meter><div class=sQ>' + item.Signal / 10 + '%</div></div>';
                 html += '<div class="signal"><div class="slider" style="width: ' + item.Signal / 10 + '%;"></div><div class="sQ">' + item.Signal / 10 + '%</div></div>'
             }
-
-            else { html += '<div class=signal style="opacity: 0;"></div>'; }
+            else {
+                html += '<div class=signal style="opacity: 0;"></div>';
+                if (document.cookie.includes("RX,TX=1")) {
+                    html += '<div class=row><div class=odd>&nbsp;</div><div class=even>&nbsp;</div></div>';
+                }
+            }
 
             html += '</div>';
         }
