@@ -75,10 +75,10 @@ async function fetchDD() {
 
     LanString = "Name,IP,MAC,Time,x,IF,y," + LanString
     var LanArray = LanString.split(',')
-    let x = LanArray.length + 7;
+    let x = Math.floor(LanArray.length / 7);
     for (i = 0; i < x; i++) {
-        i = i + 7
-        LanArray.splice(i, 0, ';');
+        a = (i + 1) * 7 + i
+        LanArray.splice(a, 0, ';');
     }
     LanArray = LanArray.toString();
     let LanJSON = DDTextToJSON(LanArray);
@@ -89,10 +89,10 @@ async function fetchDD() {
 
     arpTable = "Name,IP,MAC,arp1,IF,arp3,arp4,arp5," + arpTable
     var arpArray = arpTable.split(',')
-    let z = arpArray.length;
+    let z = Math.floor(arpArray.length / 8);
     for (i = 0; i < z; i++) {
-        i = i + 8
-        arpArray.splice(i, 0, ';');
+        a = (i + 1) * 8 + i
+        arpArray.splice(a, 0, ';');
     }
 
     arpArray = arpArray.toString();
@@ -109,10 +109,10 @@ async function fetchDD() {
 
 
     let WiFiArray = WiFiString.split('\',\'')
-    let y = WiFiArray.length;
+    let y = Math.floor(WiFiArray.length / 17);
     for (i = 0; i < y; i++) {
-        i = i + 17
-        WiFiArray.splice(i, 0, ';');
+        a = (i + 1) * 17 + i
+        WiFiArray.splice(a, 0, ';');
     }
 
     WiFiArray = WiFiArray.toString();
@@ -120,8 +120,8 @@ async function fetchDD() {
 
     WiFiArray = WiFiArray.slice(1, -1)
     WiFiArray = "MAC,1,WiFi,Uptime,RX,TX,Mode,3,4,5,Signal,6,7,8,9,10,11,;," + WiFiArray
-
     let WiFiJSON = DDTextToJSON(WiFiArray);
+
     //----combine LanArray & ARPArray--------------------------------------------------------------
     result = LanJSON.map(item => ({
         ...arpJSON.find(({ MAC }) => item.MAC == MAC),
@@ -133,7 +133,6 @@ async function fetchDD() {
         ...WiFiJSON.find(({ MAC }) => item.MAC == MAC),
         ...item,
     }));
-
     //----everything without a signal must be a lan device--------------------------------------------------------------
     resultLAN = [
         ...result.filter(x => !x.Signal)];
@@ -143,7 +142,6 @@ async function fetchDD() {
         ...result.find(({ MAC }) => item.MAC == MAC),
         ...item
     }));
-
     result = result.concat(resultLAN);
 
     //-----get sort method-----------------------------------------------------------------
@@ -722,7 +720,7 @@ async function checkURL() {
             })
         }
 
-        if (!Array.WiFi || Array.Signal) {
+        if ((!Array.WiFi || Array.Signal) && Array.IP != "N.A.") {
             response = await fetch("http://" + Array.IP, {
                 signal: controller.signal,
                 mode: "no-cors"
