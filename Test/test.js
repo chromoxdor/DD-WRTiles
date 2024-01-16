@@ -26,6 +26,7 @@ var newAmmount;
 var bgContent;
 var cText = ';expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;'
 var lTime = 0;
+//var resultOld = "";
 
 //##############################################################################################################
 //      FETCH
@@ -642,7 +643,7 @@ function longPressN() { document.getElementById('mOpen').addEventListener('long-
 function longPressS() {
     document.getElementById('closeBtn').addEventListener('long-press', function (e) {
         e.preventDefault();
-        mC("Sound")
+        mC("Sound");
     });
     document.getElementById('openSys').addEventListener('long-press', function (e) {
         e.preventDefault();
@@ -679,7 +680,7 @@ function longPressB() {
 //    SOUND
 //##############################################################################################################
 function playSound(freQ) {
-    if (!document.cookie.includes("Sound=0")) {
+    if (!document.cookie.includes("Sound=0") || freQ == 950) {
         c = new AudioContext()
         o = c.createOscillator()
         g = c.createGain()
@@ -842,7 +843,31 @@ function mC(y, z) {
     if ((document.cookie.match('(^|;)\\s*' + y + '\\s*=\\s*([^;]+)')?.pop() || '') == 1) { playSound(500); document.cookie = y + '=0;expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;' }
     else if (!z) { playSound(900); document.cookie = y + '=1' + cText }
     else { playSound(900); document.cookie = y + '=' + cText }
+    if (y == "Sound" && document.cookie.includes("Sound=1")) playSound(950);
 }
+/*
+function diff(x, y) {
+    console.log(x, y);
+    res = {};
+    if (y.length) {
+        x.forEach(item => {
+            s = false;
+            y.forEach(item2 => {
+                if (item.MAC == item2.MAC) {
+                    s = true;
+                }
+            })
+            if (!s) {
+                res = item;
+                //notifyMe(item)
+            }
+        })
+
+    }
+    resultOld = x;
+   // return res;
+
+}*/
 
 // Longress by John Doherty
 !function (e, t) { "use strict"; var n = null, a = "PointerEvent" in e || e.navigator && "msPointerEnabled" in e.navigator, i = "ontouchstart" in e || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0, o = a ? "pointerdown" : i ? "touchstart" : "mousedown", r = a ? "pointerup" : i ? "touchend" : "mouseup", m = a ? "pointermove" : i ? "touchmove" : "mousemove", u = a ? "pointerleave" : i ? "touchleave" : "mouseleave", s = 0, c = 0; function l(e) { f(), e = function (e) { if (void 0 !== e.changedTouches) return e.changedTouches[0]; return e }(e), this.dispatchEvent(new CustomEvent("long-press", { bubbles: !0, cancelable: !0, detail: { clientX: e.clientX, clientY: e.clientY, offsetX: e.offsetX, offsetY: e.offsetY, pageX: e.pageX, pageY: e.pageY }, clientX: e.clientX, clientY: e.clientY, offsetX: e.offsetX, offsetY: e.offsetY, pageX: e.pageX, pageY: e.pageY, screenX: e.screenX, screenY: e.screenY })) || t.addEventListener("click", (function e(n) { t.removeEventListener("click", e, !0), function (e) { e.stopImmediatePropagation(), e.preventDefault(), e.stopPropagation() }(n) }), !0) } function v(a) { f(a); var i = a.target, o = parseInt(function (e, n, a) { for (; e && e !== t.documentElement;) { var i = e.getAttribute(n); if (i) return i; e = e.parentNode } return a }(i, "data-long-press-delay", "600"), 10); n = function (t, n) { if (!(e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame && e.mozCancelRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame)) return e.setTimeout(t, n); var a = (new Date).getTime(), i = {}, o = function () { (new Date).getTime() - a >= n ? t.call() : i.value = requestAnimFrame(o) }; return i.value = requestAnimFrame(o), i }(l.bind(i, a), o) } function f(t) { var a; (a = n) && (e.cancelAnimationFrame ? e.cancelAnimationFrame(a.value) : e.webkitCancelAnimationFrame ? e.webkitCancelAnimationFrame(a.value) : e.webkitCancelRequestAnimationFrame ? e.webkitCancelRequestAnimationFrame(a.value) : e.mozCancelRequestAnimationFrame ? e.mozCancelRequestAnimationFrame(a.value) : e.oCancelRequestAnimationFrame ? e.oCancelRequestAnimationFrame(a.value) : e.msCancelRequestAnimationFrame ? e.msCancelRequestAnimationFrame(a.value) : clearTimeout(a)), n = null } "function" != typeof e.CustomEvent && (e.CustomEvent = function (e, n) { n = n || { bubbles: !1, cancelable: !1, detail: void 0 }; var a = t.createEvent("CustomEvent"); return a.initCustomEvent(e, n.bubbles, n.cancelable, n.detail), a }, e.CustomEvent.prototype = e.Event.prototype), e.requestAnimFrame = e.requestAnimationFrame || e.webkitRequestAnimationFrame || e.mozRequestAnimationFrame || e.oRequestAnimationFrame || e.msRequestAnimationFrame || function (t) { e.setTimeout(t, 1e3 / 60) }, t.addEventListener(r, f, !0), t.addEventListener(u, f, !0), t.addEventListener(m, (function (e) { var t = Math.abs(s - e.clientX), n = Math.abs(c - e.clientY); (t >= 10 || n >= 10) && f() }), !0), t.addEventListener("wheel", f, !0), t.addEventListener("scroll", f, !0), t.addEventListener("contextmenu", f, !0), t.addEventListener(o, (function (e) { s = e.clientX, c = e.clientY, v(e) }), !0) }(window, document);
