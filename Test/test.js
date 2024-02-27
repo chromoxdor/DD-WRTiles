@@ -612,7 +612,7 @@ function eventLS() {
 
 function splitOn(x) {
     if (x == "home") { x = routerIP; }
-    if (isOpen == 1 && window.innerWidth <= 450 && x == routerIP) { iFrClose() }
+    if (isOpen == 1 && window.innerWidth <= 950 && x == routerIP) { iFrClose() }
     else if (isOpen == 0 || x != prevX) { iFrOpen(x) }
     else { iFrClose() }
     setTimeout(changeCss, 100)
