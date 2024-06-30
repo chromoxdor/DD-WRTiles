@@ -64,9 +64,18 @@ async function fetchDD() {
     }
     nTH = nTH + 1
     if (nTH === 5) nTH = 0
-    routerIP = LanText.slice(LanText.indexOf('lan_ip::') + 8, -1);
-    routerIP = routerIP.slice(0, routerIP.indexOf('}'));
-    routerIP = routerIP.split("/")[0]
+
+    // Get the full URL
+let fullUrl = window.location.href;
+
+// Create a URL object
+let url = new URL(fullUrl);
+
+// Extract the origin (protocol + hostname + port)
+routerIP = url.origin;
+
+
+
 
 
     let LanString = LanText.slice(LanText.indexOf('dhcp_leases::') + 14, -1);
@@ -623,7 +632,7 @@ function iFrOpen(x) {
     isOpen = 1;
     new ResizeObserver(toScale).observe(framie)
     document.getElementById('framie').style.width = "100%";
-    document.getElementById('framie').innerHTML = '<iframe src="http://' + x + '"></iframe>'
+    document.getElementById('framie').innerHTML = '<iframe src="' + x + '"></iframe>'
     closeNav();
 }
 
@@ -638,7 +647,7 @@ function iFrClose() {
 //    LONG PRESS AREA
 //##############################################################################################################
 
-function longPressN() { document.getElementById('mOpen').addEventListener('long-press', function (e) { window.location.href = "http://" + routerIP; }); }
+function longPressN() { document.getElementById('mOpen').addEventListener('long-press', function (e) { window.location.href = routerIP; }); }
 
 function longPressS() {
     document.getElementById('closeBtn').addEventListener('long-press', function (e) {
