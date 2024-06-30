@@ -32,13 +32,13 @@ if [ "$action" = "add" ]; then
         https://ntfy.sh/${script_name}
 
 # Uncomment the following block if you want to handle other actions
-# else
-#     payload2="
-#     Action: $action"
-#     curl \
-#         -H "Title: ${hostname} has performed a different action on the network." \
-#         -d "${payload2}" \
-#         https://ntfy.sh/${script_name}
+ else
+     payload2="
+     Action: $action"
+     curl \
+         -H "Title: ${hostname} has performed a different action on the network." \
+         -d "${payload2}" \
+         https://ntfy.sh/${script_name}
 
 fi
 
