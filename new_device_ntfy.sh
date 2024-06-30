@@ -1,9 +1,13 @@
 #!/bin/sh
 
-# This script sends a notification via ntfy.sh when a device connects to the network
-# To use: add "curl https://raw.githubusercontent.com/chromoxdor/DD-WRTiles/main/new_device_ntfy.sh -o /tmp/www/<your_ntfy_topic>.sh"
-# Replace <your_ntfy_topic> with a unique topic to receive messages through ntfy (http://ntfy.sh/<your_ntfy_topic>)
-# Put following in Services>Dnsmasq Infrastructure>Additional Options: "dhcp-script=/tmp/www/<your_ntfy_topic>.sh"
+# This script sends a notification via ntfy.sh when a device connects to the network.
+#
+# To use: add these two lines:
+#   curl https://raw.githubusercontent.com/chromoxdor/DD-WRTiles/main/new_device_ntfy.sh -o /tmp/www/<your_ntfy_topic>.sh
+#   chmod +x /tmp/www/<your_ntfy_topic>.sh
+# to Administration > Commands and click "Save Startup" (to use it without restarting also click "Run Commands").
+# Replace <your_ntfy_topic> with a unique topic to receive messages through ntfy (http://ntfy.sh/<your_ntfy_topic>).
+# Put the following in Services > Dnsmasq > Additional Options: "dhcp-script=/tmp/www/<your_ntfy_topic>.sh" and click "Apply".
 
 # DNSMasq arguments with defaults
 action="${1:-act}"        # Default action is 'op' if not provided
@@ -32,13 +36,13 @@ if [ "$action" = "add" ]; then
         https://ntfy.sh/${script_name}
 
 # Uncomment the following block if you want to handle other actions
- else
-     payload2="
-     Action: $action"
-     curl \
-         -H "Title: ${hostname} has performed a different action on the network." \
-         -d "${payload2}" \
-         https://ntfy.sh/${script_name}
+# else
+#     payload2="
+#     Action: $action"
+#     curl \
+#         -H "Title: ${hostname} has performed a different action on the network." \
+#         -d "${payload2}" \
+#         https://ntfy.sh/${script_name}
 
 fi
 
