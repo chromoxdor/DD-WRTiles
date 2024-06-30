@@ -32,6 +32,7 @@ if [ "$action" = "add" ]; then
     # Send notification
     curl \
         -H "Title: ${hostname} has connected to the network." \
+	-H "Click: https://api.macvendors.com/${mac:0:8}:00:00:00" \
         -d "${payload}" \
         https://ntfy.sh/${script_name}
 
