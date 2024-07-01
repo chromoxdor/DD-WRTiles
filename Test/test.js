@@ -69,8 +69,11 @@ async function fetchDD() {
     let fullUrl = window.location.href;
     // Create a URL object
     let url = new URL(fullUrl);
-    // Extract the origin (protocol + hostname + port)
-    routerIP = url.origin;
+    // Extract the origin (hostname + port)
+    let baseUrl = url.origin;
+    // Remove the protocol (http:// or https://)
+    routerIP = baseUrl.replace(/^https?:\/\//, '');
+
 
 
     let LanString = LanText.slice(LanText.indexOf('dhcp_leases::') + 14, -1);
