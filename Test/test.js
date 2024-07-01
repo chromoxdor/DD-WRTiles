@@ -56,26 +56,21 @@ async function fetchDD() {
     };
 
     //------LanArray----------------------------------------------------------------
-    if (nTH == 0) {
+    if (nTH % 5 === 0) {
         let response = await fetch('/Status_Lan.live.asp', {
-            method: 'GET', credentials: 'include'
+            method: 'GET',
+            credentials: 'include'
         });
         LanText = await response.text();
     }
-    nTH = nTH + 1
-    if (nTH === 5) nTH = 0
+    nTH++;
 
     // Get the full URL
-let fullUrl = window.location.href;
-
-// Create a URL object
-let url = new URL(fullUrl);
-
-// Extract the origin (protocol + hostname + port)
-routerIP = url.origin;
-
-
-
+    let fullUrl = window.location.href;
+    // Create a URL object
+    let url = new URL(fullUrl);
+    // Extract the origin (protocol + hostname + port)
+    routerIP = url.origin;
 
 
     let LanString = LanText.slice(LanText.indexOf('dhcp_leases::') + 14, -1);
@@ -632,7 +627,7 @@ function iFrOpen(x) {
     isOpen = 1;
     new ResizeObserver(toScale).observe(framie)
     document.getElementById('framie').style.width = "100%";
-    document.getElementById('framie').innerHTML = '<iframe src="' + x + '"></iframe>'
+    document.getElementById('framie').innerHTML = '<iframe src="http://' + x + '"></iframe>'
     closeNav();
 }
 
