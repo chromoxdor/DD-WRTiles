@@ -117,19 +117,19 @@ async function fetchDD() {
 
 
     let WiFiArray = WiFiString.split('\',\'')
-    let y = Math.floor(WiFiArray.length / 17);
+    let y = Math.floor(WiFiArray.length / 21);
     for (i = 0; i < y; i++) {
-        a = (i + 1) * 17 + i
+        a = (i + 1) * 21 + i
         WiFiArray.splice(a, 0, ';');
     }
 
     WiFiArray = WiFiArray.toString();
     WiFiArray = WiFiArray.replace(/ day,/g, 'd').replace(/ days,/g, 'd');
-
+    
     WiFiArray = WiFiArray.slice(1, -1)
-    WiFiArray = "MAC,1,WiFi,Uptime,RX,TX,Mode,3,4,5,Signal,6,7,8,9,10,11,;," + WiFiArray
+    WiFiArray = "MAC,1,WiFi,Uptime,RX,TX,Mode,3,4,5,Signal,6,7,8,9,10,11,12,13,14,15,;," + WiFiArray
     let WiFiJSON = DDTextToJSON(WiFiArray);
-
+    console.log(WiFiJSON);
     //----combine LanArray & ARPArray--------------------------------------------------------------
     result = LanJSON.map(item => ({
         ...arpJSON.find(({ MAC }) => item.MAC == MAC),
@@ -302,7 +302,9 @@ async function fetchDD() {
 
             if (item.Signal) {
                 if (document.cookie.includes("RX,TX=1")) {
-                    html += '<div class=row><div class=odd>TX:' + item.TX + '</div><div class=even>RX:' + item.RX + '</div></div>';
+                    let txval = Math.round(parseFloat(item.TX)) + "M";
+                    let rxval = Math.round(parseFloat(item.RX)) + "M";
+                    html += '<div class=row><div class=odd>TX:' + txval + '</div><div class=even>RX:' + rxval + '</div></div>';
                 }
                 //html += '<div class=signal><meter value="' + item.Signal / 10 + '" min=0" max="100" id="' + item.Name + '" class="slider" ></meter><div class=sQ>' + item.Signal / 10 + '%</div></div>';
                 html += '<div class="signal"><div class="slider" style="width: ' + item.Signal / 10 + '%;"></div><div class="sQ">' + item.Signal / 10 + '%</div></div>'
