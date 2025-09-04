@@ -26,6 +26,7 @@ var newAmmount;
 var bgContent;
 var cText = ';expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/user;'
 var lTime = 0;
+var baseUrl;
 //var resultOld = "";
 
 //##############################################################################################################
@@ -69,8 +70,9 @@ async function fetchDD() {
     let fullUrl = window.location.href;
     // Create a URL object
     let url = new URL(fullUrl);
+    console.log(url);
     // Extract the origin (hostname + port)
-    let baseUrl = url.origin;
+    baseUrl = url.origin;
     // Remove the protocol (http:// or https://)
     routerIP = baseUrl.replace(/^https?:\/\//, '');
 
@@ -647,7 +649,7 @@ function iFrClose() {
 //    LONG PRESS AREA
 //##############################################################################################################
 
-function longPressN() { document.getElementById('mOpen').addEventListener('long-press', function (e) { window.location.href = routerIP; }); }
+function longPressN() { document.getElementById('mOpen').addEventListener('long-press', function (e) { window.location.href = baseUrl + "/Management.asp"; }); }
 
 function longPressS() {
     document.getElementById('closeBtn').addEventListener('long-press', function (e) {

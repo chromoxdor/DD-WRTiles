@@ -20,7 +20,7 @@ body {
 #container {
     display: flex;
     position: fixed;
-    height: 100vh;
+    height: 100dvh;
     width: 100vw;
     background-size: cover;
     background-repeat: no-repeat;
